@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Plus, Pencil, Trash2, Eye, Globe, Loader2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Plus, Pencil, Trash2, Eye, Globe, Loader2, LogOut, ClipboardPaste } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import LabelBadge from "@/components/LabelBadge";
 import RichEditor from "@/components/RichEditor";
 import { labels } from "@/lib/mockData";
@@ -38,6 +39,8 @@ interface Post {
 }
 
 const AdminPage = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [filterLabel, setFilterLabel] = useState<string>("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
@@ -192,9 +195,15 @@ const AdminPage = () => {
               <span className="text-xs font-normal text-primary-foreground/50 ml-2">এডমিন প্যানেল</span>
             </h1>
           </div>
-          <Link to="/" className="text-xs text-primary-foreground/60 hover:text-primary-foreground flex items-center gap-1 transition-colors">
-            <Eye size={14} /> সাইট দেখুন
-          </Link>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-primary-foreground/50 hidden sm:inline">{user?.email}</span>
+            <button onClick={async () => { await signOut(); navigate("/login"); }} className="text-xs text-primary-foreground/60 hover:text-primary-foreground flex items-center gap-1 transition-colors">
+              <LogOut size={14} /> লগআউট
+            </button>
+            <Link to="/" className="text-xs text-primary-foreground/60 hover:text-primary-foreground flex items-center gap-1 transition-colors">
+              <Eye size={14} /> সাইট দেখুন
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -235,9 +244,23 @@ const AdminPage = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button size="sm" onClick={openCreate} className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <Plus size={14} className="mr-1" /> নতুন পোস্ট
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" onClick={async () => {
+              try {
+                const text = await navigator.clipboard.readText();
+                if (!text.trim()) { toast({ title: "ক্লিপবোর্ড খালি", variant: "destructive" }); return; }
+                setEditingPost(null);
+                setForm({ title: text.split("\n")[0]?.slice(0, 200) || "", content: `<p>${text}</p>`, excerpt: text.slice(0, 150), label: labels[0].id, image_url: "", source_url: "", source_name: "" });
+                setDialogOpen(true);
+                toast({ title: "ক্লিপবোর্ড থেকে পেস্ট হয়েছে ✅" });
+              } catch { toast({ title: "ক্লিপবোর্ড অ্যাক্সেস ব্যর্থ", variant: "destructive" }); }
+            }}>
+              <ClipboardPaste size={14} className="mr-1" /> পেস্ট
+            </Button>
+            <Button size="sm" onClick={openCreate} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Plus size={14} className="mr-1" /> নতুন পোস্ট
+            </Button>
+          </div>
         </div>
 
         {/* Posts table */}
