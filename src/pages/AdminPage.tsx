@@ -369,6 +369,22 @@ const AdminPage = () => {
                   {fetchingUrl ? <Loader2 className="animate-spin" size={14} /> : <Globe size={14} />}
                   <span className="ml-1">{fetchingUrl ? "ফেচিং..." : "ফেচ"}</span>
                 </Button>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const text = await navigator.clipboard.readText();
+                      if (!text.trim()) { toast({ title: "ক্লিপবোর্ড খালি", variant: "destructive" }); return; }
+                      setForm((f) => ({ ...f, source_url: text.trim() }));
+                      toast({ title: "URL পেস্ট হয়েছে ✅" });
+                    } catch { toast({ title: "ক্লিপবোর্ড অ্যাক্সেস ব্যর্থ", variant: "destructive" }); }
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="shrink-0"
+                >
+                  <ClipboardPaste size={14} />
+                  <span className="ml-1">পেস্ট</span>
+                </Button>
               </div>
               <p className="text-xs text-muted-foreground mt-1">URL দিলে শিরোনাম, বিবরণ, ছবি ও সোর্স অটো আসবে</p>
             </div>
