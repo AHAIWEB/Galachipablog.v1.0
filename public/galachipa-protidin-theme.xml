@@ -745,6 +745,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <!-- রাজনীতি (Parliament/Debate) -->
 <div class='politics-section' id='sec-politics'></div>
 
+<!-- সারাদেশ (Grid) -->
+<div class='national-section' id='sec-saradeesh'></div>
+
 <!-- আলোচিত (Trending/Viral) -->
 <div class='trending-section' id='sec-trending'></div>
 
