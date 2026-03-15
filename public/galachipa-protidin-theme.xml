@@ -1,0 +1,1295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+<meta charset='UTF-8'/>
+<meta content='width=device-width, initial-scale=1' name='viewport'/>
+<b:include data='blog' name='all-head-content'/>
+
+<title><data:blog.pageTitle/></title>
+
+<!-- Hind Siliguri Font -->
+<link href='https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&amp;display=swap' rel='stylesheet'/>
+
+<!-- Font Awesome -->
+<link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css' rel='stylesheet'/>
+
+<b:skin><![CDATA[
+/*----------------------------------------------
+  গলাচিপাপ্রতিদিন - Blogger Theme v2
+  Modern Bengali news portal with unique layouts
+----------------------------------------------*/
+
+/* === CSS Variables === */
+:root {
+  --primary: #e11d48;
+  --primary-light: #fce7f3;
+  --foreground: #0a0a0b;
+  --background: #fafafa;
+  --card: #ffffff;
+  --muted: #71717a;
+  --border: #e4e4e7;
+  --radius: 6px;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
+  --shadow-hover: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06);
+  --container-width: 1200px;
+  --blue: #1d4ed8;
+  --purple: #9333ea;
+  --green: #059669;
+  --cyan: #0891b2;
+  --amber: #b45309;
+  --red: #dc2626;
+  --health-green: #16a34a;
+  --indigo: #7c3aed;
+  --opinion: #d97706;
+  --politics: #991b1b;
+  --politics-light: #fef2f2;
+  --politics-border: #fecaca;
+  --trending: #ea580c;
+  --trending-light: #fff7ed;
+  --trending-border: #fed7aa;
+}
+
+/* === Reset & Base === */
+* { margin: 0; padding: 0; box-sizing: border-box; border-color: var(--border); }
+
+body {
+  font-family: 'Hind Siliguri', sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; transition: color 0.2s; }
+img { max-width: 100%; height: auto; display: block; }
+h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+
+.container { max-width: var(--container-width); margin: 0 auto; padding: 0 1rem; }
+
+/* === Top Bar === */
+.top-bar { background: var(--foreground); padding: 6px 0; }
+.top-bar .container { display: flex; justify-content: space-between; align-items: center; }
+.top-bar span, .top-bar a { font-size: 12px; color: rgba(255,255,255,0.7); }
+.top-bar a:hover { color: #fff; }
+
+/* === Header / Logo === */
+.site-logo-area { padding: 1rem 0; text-align: center; border-bottom: 1px solid var(--border); background: var(--card); }
+.site-title { font-size: 2rem; font-weight: 700; color: var(--foreground); display: inline-block; }
+.site-title .accent { color: var(--primary); }
+.site-tagline { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* === Navigation === */
+.main-nav { background: var(--card); border-bottom: 1px solid var(--border); }
+.main-nav .container { display: flex; align-items: center; justify-content: space-between; }
+.nav-list { display: flex; list-style: none; flex-wrap: wrap; }
+.nav-list li a { display: block; padding: 10px 14px; font-size: 14px; font-weight: 500; color: rgba(10,10,11,0.8); transition: color 0.2s; white-space: nowrap; }
+.nav-list li a:hover, .nav-list li a.active { color: var(--primary); }
+.nav-list li:first-child a { font-weight: 600; color: var(--foreground); }
+.nav-search { padding: 8px; color: var(--muted); cursor: pointer; background: none; border: none; font-size: 18px; }
+.mobile-menu-btn { display: none; padding: 8px; background: none; border: none; font-size: 20px; color: var(--foreground); cursor: pointer; }
+
+/* === Breaking News Ticker === */
+.breaking-ticker { background: var(--card); border-bottom: 1px solid var(--border); overflow: hidden; }
+.breaking-ticker .container { display: flex; align-items: center; gap: 12px; padding-top: 8px; padding-bottom: 8px; }
+.breaking-label { background: var(--primary); color: #fff; padding: 4px 12px; font-size: 12px; font-weight: 700; border-radius: var(--radius); white-space: nowrap; flex-shrink: 0; }
+.ticker-content { overflow: hidden; white-space: nowrap; flex: 1; }
+.ticker-content .ticker-inner { display: inline-block; animation: ticker 30s linear infinite; }
+.ticker-content .ticker-inner a { font-size: 13px; font-weight: 500; padding: 0 24px; color: var(--foreground); }
+.ticker-content .ticker-inner a:hover { color: var(--primary); }
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* === Label Badge === */
+.label-badge { display: inline-block; background: var(--primary-light); color: var(--primary); padding: 2px 8px; border-radius: 2px; font-size: 11px; font-weight: 700; }
+.label-badge-overlay { position: absolute; top: 12px; left: 12px; background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; z-index: 2; }
+.label-badge-bottom { position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 600; z-index: 2; }
+
+/* === Section Header (reusable) === */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--primary); }
+.section-header .left { display: flex; align-items: center; gap: 8px; }
+.section-header .dot { width: 12px; height: 12px; background: var(--primary); border-radius: 2px; flex-shrink: 0; }
+.section-header h2 { font-size: 1.25rem; color: var(--foreground); }
+.section-header .more-link { font-size: 13px; color: var(--primary); font-weight: 600; }
+.section-header .more-link:hover { text-decoration: underline; }
+
+/* Color-coded section headers */
+.section-header.blue { border-bottom-color: var(--blue); }
+.section-header.blue .dot { background: var(--blue); }
+.section-header.purple { border-bottom-color: var(--purple); }
+.section-header.purple .dot { background: var(--purple); }
+.section-header.green { border-bottom-color: var(--green); }
+.section-header.green .dot { background: var(--green); }
+.section-header.cyan { border-bottom-color: var(--cyan); }
+.section-header.cyan .dot { background: var(--cyan); }
+.section-header.amber { border-bottom-color: var(--amber); }
+.section-header.amber .dot { background: var(--amber); }
+.section-header.red { border-bottom-color: var(--red); }
+.section-header.red .dot { background: var(--red); }
+.section-header.health { border-bottom-color: var(--health-green); }
+.section-header.health .dot { background: var(--health-green); }
+.section-header.indigo { border-bottom-color: var(--indigo); }
+.section-header.indigo .dot { background: var(--indigo); }
+.section-header.opinion { border-bottom-color: var(--opinion); }
+.section-header.opinion .dot { background: var(--opinion); }
+.section-header.politics { border-bottom-color: var(--politics); }
+.section-header.politics .dot { background: var(--politics); }
+.section-header.trending { border-bottom-color: var(--trending); }
+.section-header.trending .dot { background: var(--trending); }
+
+/* === রাজনীতি (Parliament/Debate Style) === */
+.politics-section { margin-bottom: 32px; }
+.politics-wrap { background: linear-gradient(135deg, var(--politics-light), #fee2e2); border-radius: 12px; padding: 20px; border: 1px solid var(--politics-border); }
+.politics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.politics-featured { position: relative; border-radius: 10px; overflow: hidden; background: var(--card); box-shadow: 0 4px 16px rgba(153,27,27,0.1); }
+.politics-featured .thumb { position: relative; }
+.politics-featured .thumb img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.politics-featured .thumb-overlay { position: absolute; top: 0; left: 0; right: 0; background: linear-gradient(to bottom, rgba(153,27,27,0.8), transparent); padding: 10px 14px; }
+.politics-featured .pol-badge { background: #fff; color: var(--politics); padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+.politics-featured .info { padding: 16px; }
+.politics-featured h3 { font-size: 18px; line-height: 1.3; }
+.politics-featured p { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+.politics-featured .author-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.politics-featured .author-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--politics); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+.politics-featured .author-name { font-size: 12px; color: var(--politics); font-weight: 600; }
+.politics-list { display: flex; flex-direction: column; }
+.politics-item { display: flex; gap: 12px; padding: 14px 12px; border-bottom: 1px solid var(--politics-border); border-radius: 6px; transition: background 0.2s; }
+.politics-item:nth-child(odd) { background: rgba(255,255,255,0.6); }
+.politics-item:hover { background: rgba(255,255,255,0.9); }
+.politics-item .num { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--politics); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
+.politics-item h4 { font-size: 14px; line-height: 1.35; }
+.politics-item .meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.politics-item .meta .author { font-size: 11px; color: var(--politics); font-weight: 600; }
+.politics-item .meta .date { font-size: 11px; color: #a1a1aa; }
+
+/* === আলোচিত (Trending/Viral Style) === */
+.trending-section { margin-bottom: 32px; }
+.trending-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 2px solid var(--trending); margin-bottom: 16px; }
+.trending-header .left { display: flex; align-items: center; gap: 8px; }
+.trending-header .fire { font-size: 20px; }
+.trending-header h2 { font-size: 1.25rem; font-weight: 700; }
+.trending-badge { background: var(--trending); color: #fff; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+.trending-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+.trending-featured { position: relative; border-radius: 12px; overflow: hidden; }
+.trending-featured img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.trending-featured .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.3) 50%, transparent); }
+.trending-featured .badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; z-index: 2; }
+.trending-featured .t-badge { background: var(--trending); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.trending-featured .view-badge { background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.trending-featured .content { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 20px; z-index: 2; }
+.trending-featured h3 { font-size: 22px; font-weight: 800; color: #fff; line-height: 1.25; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+.trending-featured p { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 8px; }
+.trending-side { display: flex; flex-direction: column; gap: 12px; }
+.trending-card { background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid var(--trending-border); box-shadow: 0 2px 8px rgba(234,88,12,0.08); transition: box-shadow 0.2s; }
+.trending-card:hover { box-shadow: 0 4px 16px rgba(234,88,12,0.15); }
+.trending-card .inner { display: flex; gap: 10px; padding: 10px; }
+.trending-card .thumb { position: relative; flex-shrink: 0; width: 70px; height: 56px; border-radius: 8px; overflow: hidden; }
+.trending-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.trending-card .rank { position: absolute; top: 2px; left: 2px; background: var(--trending); color: #fff; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
+.trending-card h4 { font-size: 13px; font-weight: 700; line-height: 1.3; }
+.trending-card .fire-date { display: flex; align-items: center; gap: 4px; margin-top: 4px; font-size: 10px; color: #a1a1aa; }
+.trending-card .fire-date .fire { font-size: 10px; color: var(--trending); }
+
+/* === শীর্ষ সংবাদ (Top News) === */
+.top-news { padding: 20px 0; }
+.top-news-grid { display: grid; grid-template-columns: 7fr 5fr; gap: 20px; }
+.top-news-main { position: relative; }
+.top-news-main .thumb { overflow: hidden; border-radius: 8px; position: relative; }
+.top-news-main .thumb img { width: 100%; aspect-ratio: 16/10; object-fit: cover; transition: transform 0.5s; }
+.top-news-main:hover .thumb img { transform: scale(1.02); }
+.top-news-main .info { margin-top: 12px; }
+.top-news-main .info h2 { font-size: 1.5rem; margin-top: 8px; transition: color 0.2s; }
+.top-news-main:hover .info h2 { color: var(--primary); }
+.top-news-main .info p { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.top-news-side { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.top-news-side-card { position: relative; }
+.top-news-side-card .thumb { overflow: hidden; border-radius: 6px; position: relative; }
+.top-news-side-card .thumb img { width: 100%; aspect-ratio: 16/10; object-fit: cover; transition: transform 0.3s; }
+.top-news-side-card:hover .thumb img { transform: scale(1.02); }
+.top-news-side-card h3 { font-size: 14px; margin-top: 6px; line-height: 1.35; transition: color 0.2s; }
+.top-news-side-card:hover h3 { color: var(--primary); }
+.top-news-side-card .date { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* === জাতীয় (Timeline Style) === */
+.national-section { margin-bottom: 32px; }
+.national-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+.national-featured { border-radius: 10px; overflow: hidden; background: var(--card); }
+.national-featured img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.national-featured .info { padding: 16px; }
+.national-featured .info .label-badge { background: var(--blue); color: #fff; border-radius: 4px; padding: 3px 10px; }
+.national-featured .info h3 { font-size: 18px; margin-top: 8px; line-height: 1.3; }
+.national-featured .info p { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.timeline-list { display: flex; flex-direction: column; }
+.timeline-item { display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.timeline-dot-wrap { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 16px; }
+.timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); border: 2px solid #dbeafe; margin-top: 4px; }
+.timeline-line { width: 2px; flex: 1; background: #dbeafe; margin-top: 4px; }
+.timeline-item h4 { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.timeline-item .date { font-size: 11px; color: var(--muted); display: block; margin-top: 4px; }
+
+/* === বিনোদন (Cinema Reel Style) === */
+.entertainment-section { margin-bottom: 32px; }
+.entertainment-wrap { background: linear-gradient(135deg, #faf5ff, #f3e8ff); border-radius: 12px; padding: 20px; border: 1px solid #e9d5ff; }
+.entertainment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ent-featured { position: relative; border-radius: 10px; overflow: hidden; }
+.ent-featured img { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+.ent-featured .overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding: 60px 16px 16px; }
+.ent-featured .ent-badge { background: var(--purple); color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+.ent-featured h3 { font-size: 18px; color: #fff; margin-top: 8px; line-height: 1.3; }
+.ent-featured p { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+.ent-stack { display: flex; flex-direction: column; gap: 12px; }
+.ent-card { display: flex; gap: 12px; background: #fff; border-radius: 10px; padding: 10px; box-shadow: 0 2px 8px rgba(147,51,234,0.08); border: 1px solid #e9d5ff; }
+.ent-card .thumb { flex-shrink: 0; width: 80px; height: 80px; border-radius: 8px; overflow: hidden; }
+.ent-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.ent-card .info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.ent-card .ent-label { font-size: 10px; color: var(--purple); font-weight: 700; text-transform: uppercase; }
+.ent-card h4 { font-size: 14px; line-height: 1.3; margin-top: 4px; }
+.ent-card .date { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* === খেলা (Horizontal Cards) === */
+.sports-section { margin-bottom: 32px; }
+.sports-list { display: flex; flex-direction: column; gap: 14px; }
+.sports-card { display: flex; gap: 16px; padding: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; transition: box-shadow 0.2s; }
+.sports-card:hover { box-shadow: var(--shadow-hover); }
+.sports-card.featured { background: #ecfdf5; border-left: 4px solid var(--green); }
+.sports-card .thumb { flex-shrink: 0; width: 120px; height: 80px; overflow: hidden; border-radius: 6px; }
+.sports-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.sports-card h4 { font-size: 15px; line-height: 1.3; }
+.sports-card p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.sports-card .meta { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+/* === প্রযুক্তি (Masonry Grid) === */
+.tech-section { margin-bottom: 32px; }
+.tech-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+.tech-featured { overflow: hidden; border-radius: 8px; position: relative; }
+.tech-featured img { width: 100%; height: 100%; min-height: 220px; object-fit: cover; }
+.tech-featured .tech-badge { position: absolute; top: 12px; left: 12px; background: var(--cyan); color: #fff; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; z-index: 2; }
+.tech-featured .overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding: 48px 16px 16px; }
+.tech-featured h3 { font-size: 18px; color: #fff; line-height: 1.3; }
+.tech-featured p { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+.tech-side { display: flex; flex-direction: column; gap: 12px; }
+.tech-card { background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 8px; padding: 12px; display: flex; gap: 8px; align-items: start; }
+.tech-card .thumb { flex-shrink: 0; width: 56px; height: 56px; overflow: hidden; border-radius: 6px; }
+.tech-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.tech-card h4 { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.tech-card .date { font-size: 11px; color: var(--muted); margin-top: 4px; display: block; }
+
+/* === সাহিত্য (Magazine) === */
+.literature-section { margin-bottom: 32px; }
+.literature-wrap { background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 10px; padding: 20px; border: 1px solid #fde68a; }
+.literature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.literature-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.literature-card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+.literature-card .info { padding: 12px; }
+.literature-card h4 { font-size: 14px; line-height: 1.35; }
+.literature-card .author { font-size: 11px; color: #92400e; margin-top: 6px; font-style: italic; }
+
+/* === রকমারি (Zigzag) === */
+.rokomari-section { margin-bottom: 32px; }
+.zigzag-item { display: flex; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.zigzag-item:nth-child(even) { flex-direction: row-reverse; }
+.zigzag-item .thumb { flex-shrink: 0; width: 160px; height: 100px; overflow: hidden; border-radius: 8px; }
+.zigzag-item .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.zigzag-item .zig-label { display: inline-block; background: #fef2f2; color: var(--red); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+.zigzag-item h4 { font-size: 15px; margin-top: 6px; line-height: 1.3; }
+.zigzag-item p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* === স্বাস্থ্য (Health Cards) === */
+.health-section { margin-bottom: 32px; }
+.health-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.health-card { border-radius: 10px; overflow: hidden; background: #fff; border: 1px solid #dcfce7; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.health-card .thumb { position: relative; }
+.health-card .thumb img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.health-card .health-icon { position: absolute; top: 8px; right: 8px; background: var(--health-green); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+.health-card .info { padding: 12px; }
+.health-card h4 { font-size: 14px; line-height: 1.35; }
+.health-card p { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* === আন্তর্জাতিক (Dark Globe) === */
+.international-section { margin-bottom: 32px; }
+.international-wrap { background: linear-gradient(135deg, #1e1b4b, #312e81); border-radius: 10px; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.intl-card { display: flex; gap: 14px; align-items: start; }
+.intl-card .thumb { flex-shrink: 0; width: 100px; height: 80px; overflow: hidden; border-radius: 8px; border: 2px solid rgba(255,255,255,0.15); }
+.intl-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.intl-card h4 { font-size: 14px; color: #fff; line-height: 1.3; }
+.intl-card p { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+.intl-card .date { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 6px; }
+
+/* === মতামত (Opinion / Quote Style) === */
+.opinion-section { margin-bottom: 32px; }
+.opinion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.opinion-card { background: #fff; border: 1px solid #fde68a; border-radius: 10px; padding: 20px; position: relative; }
+.opinion-card.highlight { background: linear-gradient(135deg, #fffbeb, #fef3c7); }
+.opinion-card .quote-icon { position: absolute; top: 12px; right: 14px; font-size: 28px; color: var(--opinion); opacity: 0.2; }
+.opinion-card .author-info { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.opinion-card .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--opinion); }
+.opinion-card .author-name { font-size: 13px; font-weight: 700; color: #92400e; }
+.opinion-card .author-role { font-size: 11px; color: var(--amber); }
+.opinion-card blockquote { font-size: 15px; font-weight: 600; line-height: 1.45; color: #1c1917; font-style: italic; border-left: 3px solid var(--opinion); padding-left: 12px; margin: 0; }
+
+/* === এডিটর পিক (Carousel) === */
+.editor-pick { margin-bottom: 32px; }
+.carousel-controls { display: flex; gap: 6px; }
+.carousel-btn { width: 28px; height: 28px; border-radius: 4px; border: 1px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.carousel-btn:hover { border-color: var(--primary); color: var(--primary); }
+.carousel-track { overflow: hidden; }
+.carousel-inner { display: flex; gap: 16px; transition: transform 0.3s ease; }
+.carousel-card { flex: 0 0 calc(25% - 12px); }
+.carousel-card .thumb { overflow: hidden; border-radius: 6px; }
+.carousel-card .thumb img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+.carousel-card .label-badge { margin-top: 8px; }
+.carousel-card h3 { font-size: 14px; margin-top: 4px; line-height: 1.35; }
+.carousel-card .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* === Sidebar === */
+.sidebar .widget { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; box-shadow: var(--shadow-card); }
+.sidebar .widget-title { font-size: 15px; font-weight: 700; padding: 12px 16px 8px; border-bottom: 2px solid var(--primary); margin-bottom: 0; display: flex; align-items: center; gap: 6px; }
+.sidebar .widget-title .dot { width: 10px; height: 10px; background: var(--primary); border-radius: 2px; }
+
+/* 3-Tab Widget */
+.tab-widget { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.tab-headers { display: flex; border-bottom: 2px solid var(--border); }
+.tab-btn { flex: 1; padding: 10px 8px; font-size: 13px; font-weight: 500; background: #fafafa; color: var(--muted); border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; border-bottom: 2px solid transparent; }
+.tab-btn.active { font-weight: 700; background: var(--primary); color: #fff; border-bottom-color: var(--primary); }
+.tab-content { padding: 14px; }
+.tab-content[data-scroll="true"] { max-height: 400px; overflow-y: auto; }
+.tab-post { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f4f4f5; }
+.tab-post:last-child { border-bottom: none; }
+.tab-post .thumb { flex-shrink: 0; width: 68px; height: 52px; overflow: hidden; border-radius: 6px; }
+.tab-post .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.tab-post .num { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+.tab-post h4 { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.tab-post .date { font-size: 11px; color: var(--muted); margin-top: 3px; display: block; }
+
+/* ইতিহাসের এই দিনে (On This Day Widget) */
+.onthisday-widget { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-top: 20px; }
+.onthisday-header { background: linear-gradient(135deg, #1e3a5f, #2563eb); padding: 12px 16px; display: flex; align-items: center; gap: 8px; }
+.onthisday-header .icon { font-size: 20px; }
+.onthisday-header h3 { font-size: 14px; font-weight: 700; color: #fff; margin: 0; }
+.onthisday-header .today { font-size: 11px; color: rgba(255,255,255,0.7); display: block; }
+.onthisday-tabs { display: flex; border-bottom: 2px solid var(--border); }
+.onthisday-tab { flex: 1; padding: 10px 8px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; background: #f8fafc; color: var(--muted); border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+.onthisday-tab.active { font-weight: 700; background: #2563eb; color: #fff; }
+.onthisday-content { max-height: 320px; overflow-y: auto; padding: 14px; }
+.onthisday-event { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f4f4f5; }
+.onthisday-event:last-child { border-bottom: none; }
+.onthisday-year { flex-shrink: 0; min-width: 48px; height: 24px; border-radius: 12px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; padding: 0 8px; }
+.onthisday-event p { font-size: 13px; line-height: 1.4; margin: 0; }
+.onthisday-quote { padding: 12px 0; border-bottom: 1px solid #f4f4f5; }
+.onthisday-quote:last-child { border-bottom: none; }
+.onthisday-quote blockquote { font-size: 13px; line-height: 1.45; font-style: italic; border-left: 3px solid #2563eb; padding-left: 10px; margin: 0; }
+.onthisday-quote .author { font-size: 11px; color: #2563eb; font-weight: 600; margin-top: 6px; padding-left: 14px; }
+.onthisday-source { border-top: 1px solid #f4f4f5; padding: 6px 14px; text-align: right; font-size: 10px; color: #a1a1aa; }
+
+.sidebar .compact-post { display: flex; gap: 10px; padding: 8px 16px; border-bottom: 1px solid var(--border); }
+.sidebar .compact-post:last-child { border-bottom: none; }
+.sidebar .compact-post .thumb { flex-shrink: 0; width: 72px; height: 56px; overflow: hidden; border-radius: 4px; }
+.sidebar .compact-post .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.sidebar .compact-post h4 { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.sidebar .compact-post:hover h4 { color: var(--primary); }
+.sidebar .compact-post .date { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* === Main Layout === */
+.main-layout { display: grid; grid-template-columns: 1fr 340px; gap: 32px; }
+
+/* === Post Card (generic) === */
+.post-card { padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.post-card .thumb { overflow: hidden; border-radius: var(--radius); }
+.post-card .thumb img { width: 100%; aspect-ratio: 16/10; object-fit: cover; transition: transform 0.3s; }
+.post-card:hover .thumb img { transform: scale(1.02); }
+.post-card h3 { font-size: 15px; margin-top: 8px; line-height: 1.35; transition: color 0.2s; }
+.post-card:hover h3 { color: var(--primary); }
+.post-card .excerpt { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.post-card .meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+/* === Post Page === */
+.post-page { max-width: 800px; margin: 0 auto; padding: 24px 1rem; }
+.post-page .post-title { font-size: 1.75rem; margin-bottom: 12px; line-height: 1.3; }
+.post-page .post-meta { font-size: 13px; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.post-page .post-image { width: 100%; border-radius: var(--radius); margin-bottom: 20px; }
+.post-page .post-body { font-size: 16px; line-height: 1.8; }
+.post-page .post-body p { margin-bottom: 16px; }
+.post-page .post-body img { border-radius: var(--radius); margin: 16px 0; }
+.post-page .post-body h2, .post-page .post-body h3 { margin-top: 24px; margin-bottom: 12px; }
+.post-page .post-labels { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* === Comments === */
+.comments-section { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+/* === Footer === */
+.site-footer { background: var(--foreground); margin-top: 32px; padding: 32px 0 16px; }
+.footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.site-footer h3 { font-size: 1.15rem; color: #fff; margin-bottom: 8px; }
+.site-footer h3 .accent { color: var(--primary); }
+.site-footer h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.site-footer p, .site-footer a, .site-footer li { font-size: 13px; color: rgba(255,255,255,0.6); }
+.site-footer a:hover { color: var(--primary); }
+.site-footer ul { list-style: none; columns: 2; }
+.site-footer ul li { padding: 3px 0; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 24px; padding-top: 16px; text-align: center; }
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+/* === Pagination === */
+.blog-pager { display: flex; justify-content: center; gap: 12px; padding: 24px 0; }
+.blog-pager a { display: inline-block; padding: 8px 20px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; font-weight: 600; color: var(--foreground); transition: all 0.2s; }
+.blog-pager a:hover { border-color: var(--primary); color: var(--primary); }
+
+/* === Responsive === */
+@media (max-width: 1024px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+
+@media (max-width: 768px) {
+  .top-news-grid, .national-grid { grid-template-columns: 1fr; }
+  .top-news-side { grid-template-columns: 1fr 1fr; }
+  .entertainment-grid { grid-template-columns: 1fr; }
+  .tech-grid { grid-template-columns: 1fr; }
+  .international-wrap { grid-template-columns: 1fr; }
+  .opinion-grid { grid-template-columns: 1fr; }
+  .literature-grid { grid-template-columns: 1fr; }
+  .health-grid { grid-template-columns: 1fr; }
+  .posts-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  .sidebar { grid-template-columns: 1fr; }
+  .carousel-card { flex: 0 0 calc(50% - 8px); }
+  .zigzag-item, .zigzag-item:nth-child(even) { flex-direction: column; }
+  .zigzag-item .thumb { width: 100%; height: auto; }
+  .nav-list { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--card); border-bottom: 1px solid var(--border); z-index: 50; }
+  .nav-list.open { display: flex; }
+  .mobile-menu-btn { display: block; }
+  .site-title { font-size: 1.5rem; }
+  .post-page .post-title { font-size: 1.35rem; }
+}
+
+/* === Utility === */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+
+/* === Animation === */
+@keyframes slideUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.news-entrance { animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1) both; }
+
+/* Hide Blogger defaults */
+.blog-feeds, .feed-links { display: none; }
+]]></b:skin>
+
+<style type='text/css'>
+.post-outer { margin-bottom: 0; }
+.post { margin-bottom: 0; }
+</style>
+
+</head>
+
+<body>
+<b:section class='top-bar' id='topbar' maxwidgets='1' showaddelement='no'>
+<b:widget id='HTML1' locked='true' title='Top Bar' type='HTML' version='2'>
+<b:includable id='main'>
+<div class='container'>
+<span id='current-date'></span>
+<a expr:href='data:blog.homepageUrl'>গলাচিপাপ্রতিদিন</a>
+</div>
+<script>
+//<![CDATA[
+(function(){
+  var months=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+  var days=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+  var d=new Date();
+  function toBn(n){return String(n).replace(/[0-9]/g,function(m){return '০১২৩৪৫৬৭৮৯'[m]});}
+  document.getElementById('current-date').textContent=toBn(d.getDate())+' '+months[d.getMonth()]+', '+toBn(d.getFullYear())+' | '+days[d.getDay()];
+})();
+//]]>
+</script>
+</b:includable>
+</b:widget>
+</b:section>
+
+<!-- Logo Area -->
+<div class='site-logo-area'>
+<div class='container'>
+<a expr:href='data:blog.homepageUrl'>
+<div class='site-title'>গলাচিপা<span class='accent'>প্রতিদিন</span></div>
+<div class='site-tagline'>গলাচিপার সবচেয়ে বিশ্বস্ত সংবাদ মাধ্যম</div>
+</a>
+</div>
+</div>
+
+<!-- Navigation -->
+<nav class='main-nav'>
+<div class='container'>
+<button class='mobile-menu-btn' onclick='document.querySelector(&apos;.nav-list&apos;).classList.toggle(&apos;open&apos;)'>
+<i class='fas fa-bars'/>
+</button>
+<b:section id='navigation' maxwidgets='1' showaddelement='no'>
+<b:widget id='LinkList1' locked='true' title='Navigation' type='LinkList' version='2'>
+<b:includable id='main'>
+<ul class='nav-list'>
+<li><a expr:href='data:blog.homepageUrl'>প্রচ্ছদ</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/জাতীয়&quot;'>জাতীয়</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রাজনীতি&quot;'>রাজনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আলোচিত&quot;'>আলোচিত</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সারাদেশ&quot;'>সারাদেশ</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আন্তর্জাতিক&quot;'>আন্তর্জাতিক</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/খেলা&quot;'>খেলা</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/বিনোদন&quot;'>বিনোদন</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/প্রযুক্তি&quot;'>প্রযুক্তি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/অর্থনীতি&quot;'>অর্থনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সাহিত্য&quot;'>সাহিত্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রকমারি&quot;'>রকমারি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/স্বাস্থ্য&quot;'>স্বাস্থ্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/মতামত&quot;'>মতামত</a></li>
+</ul>
+</b:includable>
+</b:widget>
+</b:section>
+<button class='nav-search' onclick='document.querySelector(&apos;.search-widget&apos;).classList.toggle(&apos;active&apos;)'>
+<i class='fas fa-search'/>
+</button>
+</div>
+</nav>
+
+<!-- Breaking Ticker -->
+<div class='breaking-ticker'>
+<div class='container'>
+<span class='breaking-label'>সর্বশেষ</span>
+<div class='ticker-content'>
+<div class='ticker-inner' id='ticker-inner'>
+<!-- Populated by JS -->
+</div>
+</div>
+</div>
+</div>
+
+<!-- Main Content -->
+<div class='container'>
+<b:section class='main-content' id='main' showaddelement='yes'>
+<b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
+<b:includable id='main'>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- INDEX / HOME PAGE -->
+<!-- ═══════════════════════════════════════ -->
+<b:if cond='data:view.isHomepage'>
+
+<!-- শীর্ষ সংবাদ (Top News) - shows actual label, hides শীর্ষ সংবাদ tag -->
+<div class='top-news'>
+<div class='section-header'>
+<div class='left'><span class='dot'/><h2>শীর্ষ সংবাদ</h2></div>
+</div>
+<div class='posts-grid'>
+<b:loop values='data:posts' var='post'>
+<article class='post-card news-entrance'>
+<a expr:href='data:post.url'>
+<b:if cond='data:post.featuredImage'>
+<div class='thumb' style='position:relative'>
+<img expr:alt='data:post.title' expr:src='data:post.featuredImage' loading='lazy'/>
+<!-- Show actual post label, NOT শীর্ষ সংবাদ -->
+<b:if cond='data:post.labels'>
+<b:loop values='data:post.labels' var='label'>
+<b:if cond='data:label.name != &quot;শীর্ষ সংবাদ&quot;'>
+<b:if cond='data:label.isFirst'>
+<span class='label-badge-bottom'><data:label.name/></span>
+</b:if>
+</b:if>
+</b:loop>
+</b:if>
+</div>
+</b:if>
+<div class='info'>
+<h3><data:post.title/></h3>
+<p class='excerpt'><data:post.snippets.short/></p>
+<div class='meta'><data:post.date/></div>
+</div>
+</a>
+</article>
+</b:loop>
+</div>
+</div>
+
+</b:if>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- POST PAGE -->
+<!-- ═══════════════════════════════════════ -->
+<b:if cond='data:view.isPost'>
+<b:loop values='data:posts' var='post'>
+<article class='post-page'>
+<h1 class='post-title'><data:post.title/></h1>
+<div class='post-meta'>
+<b:if cond='data:post.labels'>
+<b:loop values='data:post.labels' var='label'>
+<span class='label-badge'><data:label.name/></span>
+</b:loop>
+</b:if>
+<span><i class='fas fa-user'/> <data:post.author.name/></span>
+<span><i class='fas fa-calendar'/> <data:post.date/></span>
+</div>
+<b:if cond='data:post.featuredImage'>
+<img class='post-image' expr:alt='data:post.title' expr:src='data:post.featuredImage'/>
+</b:if>
+<div class='post-body'><data:post.body/></div>
+<div class='post-labels'>
+<b:if cond='data:post.labels'>
+<b:loop values='data:post.labels' var='label'>
+<a class='label-badge' expr:href='data:label.url'><data:label.name/></a>
+</b:loop>
+</b:if>
+</div>
+
+<!-- Share Buttons -->
+<div style='margin-top:20px; display:flex; gap:8px;'>
+<a expr:href='&quot;https://www.facebook.com/sharer/sharer.php?u=&quot; + data:post.url' style='background:#1877F2;color:#fff;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:600' target='_blank'>
+<i class='fab fa-facebook-f'/> শেয়ার
+</a>
+<a expr:href='&quot;https://twitter.com/intent/tweet?url=&quot; + data:post.url + &quot;&amp;text=&quot; + data:post.title' style='background:#1DA1F2;color:#fff;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:600' target='_blank'>
+<i class='fab fa-twitter'/> টুইট
+</a>
+<a expr:href='&quot;https://api.whatsapp.com/send?text=&quot; + data:post.title + &quot; &quot; + data:post.url' style='background:#25D366;color:#fff;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:600' target='_blank'>
+<i class='fab fa-whatsapp'/> হোয়াটসঅ্যাপ
+</a>
+</div>
+
+<!-- Comments -->
+<div class='comments-section'>
+<b:if cond='data:post.allowComments'>
+<h3 style='font-size:1.1rem; margin-bottom:16px;'>মন্তব্য</h3>
+<b:include data='post' name='comments'/>
+</b:if>
+</div>
+</article>
+</b:loop>
+</b:if>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- LABEL / SEARCH RESULTS PAGE -->
+<!-- ═══════════════════════════════════════ -->
+<b:if cond='data:view.isLabelSearch'>
+<div class='category-section'>
+<div class='section-header'>
+<div class='left'><span class='dot'/><h2><data:view.search.label/></h2></div>
+</div>
+<div class='posts-grid'>
+<b:loop values='data:posts' var='post'>
+<article class='post-card news-entrance'>
+<a expr:href='data:post.url'>
+<b:if cond='data:post.featuredImage'>
+<div class='thumb'>
+<img expr:alt='data:post.title' expr:src='data:post.featuredImage' loading='lazy'/>
+</div>
+</b:if>
+<h3><data:post.title/></h3>
+<p class='excerpt'><data:post.snippets.short/></p>
+<div class='meta'><data:post.date/></div>
+</a>
+</article>
+</b:loop>
+</div>
+</div>
+</b:if>
+
+<!-- Pagination -->
+<div class='blog-pager'>
+<b:if cond='data:olderPageUrl'>
+<a class='blog-pager-older-link' expr:href='data:olderPageUrl'>পুরনো পোস্ট →</a>
+</b:if>
+<b:if cond='data:newerPageUrl'>
+<a class='blog-pager-newer-link' expr:href='data:newerPageUrl'>← নতুন পোস্ট</a>
+</b:if>
+</div>
+
+</b:includable>
+<b:includable id='comments' var='post'>
+<div id='comments-block'>
+<b:if cond='data:post.comments.any'>
+<b:loop values='data:post.comments' var='comment'>
+<div style='padding:12px 0; border-bottom:1px solid var(--border);'>
+<div style='font-weight:600; font-size:14px;'><data:comment.author.name/></div>
+<div style='font-size:13px; color:var(--muted); margin-top:4px;'><data:comment.body/></div>
+<div style='font-size:11px; color:var(--muted); margin-top:4px;'><data:comment.date/></div>
+</div>
+</b:loop>
+</b:if>
+<div style='margin-top:16px;'>
+<a expr:href='data:post.commentFormIframeSrc' style='display:inline-block; background:var(--primary); color:#fff; padding:8px 20px; border-radius:var(--radius); font-size:14px; font-weight:600;'>মন্তব্য করুন</a>
+</div>
+</div>
+</b:includable>
+</b:widget>
+</b:section>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- LABEL-BASED SECTIONS (via Blogger Feeds JS) -->
+<!-- ═══════════════════════════════════════ -->
+<div class='container'>
+<div class='main-layout'>
+<div class='content-area'>
+
+<!-- রাজনীতি (Parliament/Debate) -->
+<div class='politics-section' id='sec-politics'></div>
+
+<!-- আলোচিত (Trending/Viral) -->
+<div class='trending-section' id='sec-trending'></div>
+
+<!-- জাতীয় (Timeline) -->
+<div class='national-section' id='sec-national'></div>
+
+<!-- এডিটর পিক (Carousel) -->
+<div class='editor-pick' id='sec-editor-pick'></div>
+
+<!-- বিনোদন (Cinema Reel) -->
+<div class='entertainment-section' id='sec-entertainment'></div>
+
+<!-- খেলা (Horizontal Cards) -->
+<div class='sports-section' id='sec-sports'></div>
+
+<!-- প্রযুক্তি (Masonry) -->
+<div class='tech-section' id='sec-tech'></div>
+
+<!-- সাহিত্য (Magazine) -->
+<div class='literature-section' id='sec-literature'></div>
+
+<!-- রকমারি (Zigzag) -->
+<div class='rokomari-section' id='sec-rokomari'></div>
+
+<!-- স্বাস্থ্য (Health Cards) -->
+<div class='health-section' id='sec-health'></div>
+
+<!-- আন্তর্জাতিক (Dark Globe) -->
+<div class='international-section' id='sec-international'></div>
+
+<!-- মতামত (Opinion / Quotes) -->
+<div class='opinion-section' id='sec-opinion'></div>
+
+</div>
+
+<!-- Sidebar -->
+<div class='sidebar'>
+<b:section id='sidebar' showaddelement='yes'>
+<b:widget id='PopularPosts1' locked='false' title='জনপ্রিয় সংবাদ' type='PopularPosts' version='2'>
+<b:includable id='main'>
+<div class='widget'>
+<div class='widget-title'><span class='dot'/> <data:title/></div>
+<b:loop values='data:posts' var='post'>
+<a class='compact-post' expr:href='data:post.url'>
+<b:if cond='data:post.featuredImage'>
+<div class='thumb'>
+<img expr:alt='data:post.title' expr:src='data:post.featuredImage' loading='lazy'/>
+</div>
+</b:if>
+<div>
+<h4><data:post.title/></h4>
+<span class='date'><data:post.date/></span>
+</div>
+</a>
+</b:loop>
+</div>
+</b:includable>
+</b:widget>
+</b:section>
+
+<!-- 3-Tab Widget (populated by JS) -->
+<div class='tab-widget' id='sidebar-tabs'></div>
+
+<!-- ইতিহাসের এই দিনে (On This Day Widget) -->
+<div class='onthisday-widget' id='onthisday-widget'></div>
+
+</div>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class='site-footer'>
+<div class='container'>
+<div class='footer-grid'>
+<div>
+<h3>গলাচিপা<span class='accent'>প্রতিদিন</span></h3>
+<p>গলাচিপার সবচেয়ে বিশ্বস্ত অনলাইন সংবাদ মাধ্যম। স্থানীয় ও জাতীয় সব খবর পান সবার আগে।</p>
+</div>
+<div>
+<h4>বিভাগসমূহ</h4>
+<b:section id='footer-labels' maxwidgets='1' showaddelement='no'>
+<b:widget id='Label1' locked='true' title='Labels' type='Label' version='2'>
+<b:includable id='main'>
+<ul>
+<b:loop values='data:labels' var='label'>
+<li><a expr:href='data:label.url'><data:label.name/></a></li>
+</b:loop>
+</ul>
+</b:includable>
+</b:widget>
+</b:section>
+</div>
+<div>
+<h4>যোগাযোগ</h4>
+<p>ঠিকানা: গলাচিপা, পটুয়াখালী</p>
+<p style='margin-top:4px;'>ইমেইল: info@galachipaprotidin.com</p>
+<p style='margin-top:4px;'>ফোন: +৮৮০ ১৭XX-XXXXXX</p>
+</div>
+</div>
+<div class='footer-bottom'>
+<p>© ২০২৬ গলাচিপাপ্রতিদিন। সর্বস্বত্ব সংরক্ষিত।</p>
+</div>
+</div>
+</footer>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- JAVASCRIPT: Label Sections + Widgets  -->
+<!-- ═══════════════════════════════════════ -->
+<script>
+//<![CDATA[
+(function(){
+  var BLOG_URL = window.location.origin;
+
+  // Helper: fetch posts by label via Blogger JSON feed
+  function fetchLabel(label, count, callback) {
+    var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json&max-results=' + count;
+    var s = document.createElement('script');
+    var cbName = 'cb_' + label.replace(/[^a-zA-Z\u0980-\u09FF]/g, '') + '_' + Date.now();
+    url += '&callback=' + cbName;
+    window[cbName] = function(data) {
+      var posts = [];
+      if (data.feed && data.feed.entry) {
+        data.feed.entry.forEach(function(e) {
+          var link = '';
+          e.link.forEach(function(l) { if (l.rel === 'alternate') link = l.href; });
+          var img = '';
+          if (e.media$thumbnail) img = e.media$thumbnail.url.replace(/s72-c/, 's600-c');
+          var labels = [];
+          if (e.category) e.category.forEach(function(c) { labels.push(c.term); });
+          posts.push({
+            title: e.title.$t,
+            url: link,
+            image: img,
+            excerpt: e.summary ? e.summary.$t.substring(0, 100) : '',
+            author: e.author[0].name.$t,
+            date: e.published.$t.substring(0, 10),
+            labels: labels
+          });
+        });
+      }
+      callback(posts);
+      delete window[cbName];
+      s.remove();
+    };
+    document.body.appendChild(s);
+    s.src = url;
+  }
+
+  // Helper: get visible label (skip শীর্ষ সংবাদ)
+  function getVisibleLabel(labels) {
+    for (var i = 0; i < labels.length; i++) {
+      if (labels[i] !== 'শীর্ষ সংবাদ') return labels[i];
+    }
+    return labels[0] || '';
+  }
+
+  // === TICKER ===
+  fetchLabel('শীর্ষ সংবাদ', 10, function(posts) {
+    if (posts.length === 0) {
+      // fallback: fetch recent
+      fetchLabel('জাতীয়', 6, function(p2) { buildTicker(p2); });
+    } else {
+      buildTicker(posts);
+    }
+  });
+  function buildTicker(posts) {
+    var html = '';
+    posts.forEach(function(p) { html += '<a href="' + p.url + '">' + p.title + '</a>'; });
+    document.getElementById('ticker-inner').innerHTML = html + html;
+  }
+
+  // === রাজনীতি (Parliament/Debate Style) ===
+  fetchLabel('রাজনীতি', 5, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-politics');
+    var html = '<div class="section-header politics"><div class="left"><span class="dot"></span><h2>রাজনীতি</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/রাজনীতি">আরো ❯</a></div>';
+    html += '<div class="politics-wrap"><div class="politics-grid">';
+    // Featured card
+    html += '<div class="politics-featured"><a href="' + posts[0].url + '">';
+    html += '<div class="thumb">';
+    if (posts[0].image) html += '<img src="' + posts[0].image + '" alt=""/>';
+    html += '<div class="thumb-overlay"><span class="pol-badge">🏛️ রাজনীতি</span></div></div>';
+    html += '<div class="info"><h3>' + posts[0].title + '</h3><p>' + posts[0].excerpt + '</p>';
+    html += '<div class="author-row"><span class="author-avatar">প</span><span class="author-name">' + posts[0].author + '</span><span style="font-size:11px;color:#a1a1aa">· ' + posts[0].date + '</span></div>';
+    html += '</div></a></div>';
+    // Numbered list
+    html += '<div class="politics-list">';
+    for (var i = 1; i < posts.length; i++) {
+      html += '<a href="' + posts[i].url + '" class="politics-item">';
+      html += '<span class="num">' + i + '</span>';
+      html += '<div><h4>' + posts[i].title + '</h4>';
+      html += '<div class="meta"><span class="author">' + posts[i].author + '</span><span class="date">' + posts[i].date + '</span></div>';
+      html += '</div></a>';
+    }
+    html += '</div></div></div>';
+    el.innerHTML = html;
+  });
+
+  // === আলোচিত (Trending/Viral Style) ===
+  fetchLabel('আলোচিত', 5, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-trending');
+    var html = '<div class="trending-header"><div class="left"><span class="fire">🔥</span><h2>আলোচিত</h2><span class="trending-badge">TRENDING</span></div>';
+    html += '<a class="more-link" style="color:#ea580c;font-size:13px;font-weight:600" href="' + BLOG_URL + '/search/label/আলোচিত">আরো ❯</a></div>';
+    html += '<div class="trending-grid">';
+    // Big featured
+    html += '<div class="trending-featured"><a href="' + posts[0].url + '">';
+    if (posts[0].image) html += '<img src="' + posts[0].image + '" alt=""/>';
+    html += '<div class="overlay"></div>';
+    html += '<div class="badges"><span class="t-badge">🔥 আলোচিত</span><span class="view-badge">👁 ১২.৫K</span></div>';
+    html += '<div class="content"><h3>' + posts[0].title + '</h3><p>' + posts[0].excerpt + '</p></div>';
+    html += '</a></div>';
+    // Side cards
+    html += '<div class="trending-side">';
+    for (var i = 1; i < posts.length; i++) {
+      html += '<a href="' + posts[i].url + '" class="trending-card"><div class="inner">';
+      html += '<div class="thumb">';
+      if (posts[i].image) html += '<img src="' + posts[i].image + '" alt=""/>';
+      html += '<span class="rank">' + i + '</span></div>';
+      html += '<div><h4>' + posts[i].title + '</h4>';
+      html += '<div class="fire-date"><span class="fire">🔥</span><span>' + posts[i].date + '</span></div>';
+      html += '</div></div></a>';
+    }
+    html += '</div></div>';
+    el.innerHTML = html;
+  });
+
+  // === জাতীয় (Timeline) ===
+  fetchLabel('জাতীয়', 5, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-national');
+    var html = '<div class="section-header blue"><div class="left"><span class="dot"></span><h2>জাতীয়</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/জাতীয়">আরো ❯</a></div>';
+    html += '<div class="national-grid">';
+    // Featured
+    html += '<div class="national-featured"><a href="' + posts[0].url + '">';
+    if (posts[0].image) html += '<img src="' + posts[0].image + '" alt=""/>';
+    html += '<div class="info"><span class="label-badge" style="background:#1d4ed8;color:#fff;border-radius:4px;padding:3px 10px">' + getVisibleLabel(posts[0].labels) + '</span>';
+    html += '<h3>' + posts[0].title + '</h3><p>' + posts[0].excerpt + '</p></div></a></div>';
+    // Timeline
+    html += '<div class="timeline-list">';
+    for (var i = 1; i < posts.length; i++) {
+      html += '<a href="' + posts[i].url + '" class="timeline-item">';
+      html += '<div class="timeline-dot-wrap"><div class="timeline-dot"></div>';
+      if (i < posts.length - 1) html += '<div class="timeline-line"></div>';
+      html += '</div><div><h4>' + posts[i].title + '</h4><span class="date">' + posts[i].date + '</span></div></a>';
+    }
+    html += '</div></div>';
+    el.innerHTML = html;
+  });
+
+  // === এডিটর পিক (Carousel) ===
+  fetchLabel('এডিটর পিক', 8, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-editor-pick');
+    var html = '<div class="section-header"><div class="left"><span class="dot"></span><h2>⭐ এডিটর পিক</h2></div>';
+    html += '<div class="carousel-controls"><button class="carousel-btn" onclick="moveCarousel(-1)">❮</button><button class="carousel-btn" onclick="moveCarousel(1)">❯</button></div></div>';
+    html += '<div class="carousel-track"><div class="carousel-inner" id="carousel-inner">';
+    posts.forEach(function(p) {
+      html += '<div class="carousel-card"><a href="' + p.url + '">';
+      if (p.image) html += '<div class="thumb"><img src="' + p.image + '" alt=""/></div>';
+      html += '<span class="label-badge">' + getVisibleLabel(p.labels) + '</span>';
+      html += '<h3>' + p.title + '</h3><div class="meta">' + p.author + ' · ' + p.date + '</div>';
+      html += '</a></div>';
+    });
+    html += '</div></div>';
+    el.innerHTML = html;
+  });
+  var carouselIdx = 0;
+  window.moveCarousel = function(dir) {
+    var inner = document.getElementById('carousel-inner');
+    if (!inner) return;
+    var cards = inner.children.length;
+    var visible = window.innerWidth < 768 ? 2 : 4;
+    var maxIdx = Math.max(0, cards - visible);
+    carouselIdx = Math.max(0, Math.min(maxIdx, carouselIdx + dir));
+    var pct = carouselIdx * (100 / visible + 1.5);
+    inner.style.transform = 'translateX(-' + pct + '%)';
+  };
+
+  // === বিনোদন (Cinema Reel) ===
+  fetchLabel('বিনোদন', 4, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-entertainment');
+    var html = '<div class="section-header purple"><div class="left"><span class="dot"></span><h2>বিনোদন</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/বিনোদন">আরো ❯</a></div>';
+    html += '<div class="entertainment-wrap"><div class="entertainment-grid">';
+    // Featured
+    html += '<div class="ent-featured"><a href="' + posts[0].url + '">';
+    if (posts[0].image) html += '<img src="' + posts[0].image + '" alt=""/>';
+    html += '<div class="overlay"><span class="ent-badge">🎬 ' + getVisibleLabel(posts[0].labels) + '</span>';
+    html += '<h3>' + posts[0].title + '</h3><p>' + posts[0].excerpt + '</p></div></a></div>';
+    // Stack
+    html += '<div class="ent-stack">';
+    for (var i = 1; i < posts.length; i++) {
+      html += '<a href="' + posts[i].url + '" class="ent-card">';
+      if (posts[i].image) html += '<div class="thumb"><img src="' + posts[i].image + '" alt=""/></div>';
+      html += '<div class="info"><span class="ent-label">🎭 ' + getVisibleLabel(posts[i].labels) + '</span>';
+      html += '<h4>' + posts[i].title + '</h4><span class="date">' + posts[i].date + '</span></div></a>';
+    }
+    html += '</div></div></div>';
+    el.innerHTML = html;
+  });
+
+  // === খেলা (Horizontal Cards) ===
+  fetchLabel('খেলা', 4, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-sports');
+    var html = '<div class="section-header green"><div class="left"><span class="dot"></span><h2>খেলা</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/খেলা">আরো ❯</a></div>';
+    html += '<div class="sports-list">';
+    posts.forEach(function(p, i) {
+      html += '<a href="' + p.url + '" class="sports-card' + (i === 0 ? ' featured' : '') + '">';
+      if (p.image) html += '<div class="thumb"><img src="' + p.image + '" alt=""/></div>';
+      html += '<div><h4>' + p.title + '</h4><p>' + p.excerpt + '</p><div class="meta">' + p.author + ' · ' + p.date + '</div></div></a>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  });
+
+  // === প্রযুক্তি (Masonry) ===
+  fetchLabel('প্রযুক্তি', 4, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-tech');
+    var html = '<div class="section-header cyan"><div class="left"><span class="dot"></span><h2>প্রযুক্তি</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/প্রযুক্তি">আরো ❯</a></div>';
+    html += '<div class="tech-grid">';
+    html += '<div class="tech-featured"><a href="' + posts[0].url + '">';
+    if (posts[0].image) html += '<img src="' + posts[0].image + '" alt=""/>';
+    html += '<span class="tech-badge">🔬 ' + getVisibleLabel(posts[0].labels) + '</span>';
+    html += '<div class="overlay"><h3>' + posts[0].title + '</h3><p>' + posts[0].excerpt + '</p></div></a></div>';
+    html += '<div class="tech-side">';
+    for (var i = 1; i < posts.length; i++) {
+      html += '<a href="' + posts[i].url + '" class="tech-card">';
+      if (posts[i].image) html += '<div class="thumb"><img src="' + posts[i].image + '" alt=""/></div>';
+      html += '<div><h4>' + posts[i].title + '</h4><span class="date">' + posts[i].date + '</span></div></a>';
+    }
+    html += '</div></div>';
+    el.innerHTML = html;
+  });
+
+  // === সাহিত্য (Magazine) ===
+  fetchLabel('সাহিত্য', 3, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-literature');
+    var html = '<div class="section-header amber"><div class="left"><span class="dot"></span><h2>সাহিত্য</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/সাহিত্য">আরো ❯</a></div>';
+    html += '<div class="literature-wrap"><div class="literature-grid">';
+    posts.forEach(function(p) {
+      html += '<a href="' + p.url + '" class="literature-card">';
+      if (p.image) html += '<img src="' + p.image + '" alt=""/>';
+      html += '<div class="info"><h4>' + p.title + '</h4><div class="author">✍ ' + p.author + '</div></div></a>';
+    });
+    html += '</div></div>';
+    el.innerHTML = html;
+  });
+
+  // === রকমারি (Zigzag) ===
+  fetchLabel('রকমারি', 3, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-rokomari');
+    var html = '<div class="section-header red"><div class="left"><span class="dot"></span><h2>রকমারি</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/রকমারি">আরো ❯</a></div>';
+    posts.forEach(function(p, i) {
+      html += '<div class="zigzag-item"><a href="' + p.url + '" style="display:flex;gap:16px;width:100%;' + (i % 2 === 1 ? 'flex-direction:row-reverse' : '') + '">';
+      if (p.image) html += '<div class="thumb"><img src="' + p.image + '" alt=""/></div>';
+      html += '<div><span class="zig-label">' + getVisibleLabel(p.labels) + '</span>';
+      html += '<h4>' + p.title + '</h4><p>' + p.excerpt + '</p></div></a></div>';
+    });
+    el.innerHTML = html;
+  });
+
+  // === স্বাস্থ্য (Health Cards) ===
+  fetchLabel('স্বাস্থ্য', 3, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-health');
+    var html = '<div class="section-header health"><div class="left"><span class="dot"></span><h2>স্বাস্থ্য</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/স্বাস্থ্য">আরো ❯</a></div>';
+    html += '<div class="health-grid">';
+    posts.forEach(function(p) {
+      html += '<a href="' + p.url + '" class="health-card">';
+      html += '<div class="thumb">';
+      if (p.image) html += '<img src="' + p.image + '" alt=""/>';
+      html += '<span class="health-icon">+</span></div>';
+      html += '<div class="info"><h4>' + p.title + '</h4><p>' + p.excerpt + '</p></div></a>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  });
+
+  // === আন্তর্জাতিক (Dark Globe) ===
+  fetchLabel('আন্তর্জাতিক', 2, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-international');
+    var html = '<div class="section-header indigo"><div class="left"><span class="dot"></span><h2>আন্তর্জাতিক</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/আন্তর্জাতিক">আরো ❯</a></div>';
+    html += '<div class="international-wrap">';
+    posts.forEach(function(p) {
+      html += '<a href="' + p.url + '" class="intl-card">';
+      if (p.image) html += '<div class="thumb"><img src="' + p.image + '" alt=""/></div>';
+      html += '<div><h4>' + p.title + '</h4><p>' + p.excerpt + '</p><div class="date">🌍 ' + p.date + '</div></div></a>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  });
+
+  // === মতামত (Opinion / Quotes with round avatars) ===
+  fetchLabel('মতামত', 4, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-opinion');
+    var html = '<div class="section-header opinion"><div class="left"><span class="dot"></span><h2>মতামত</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/মতামত">আরো ❯</a></div>';
+    html += '<div class="opinion-grid">';
+    posts.forEach(function(p, i) {
+      html += '<div class="opinion-card' + (i === 0 ? ' highlight' : '') + '">';
+      html += '<span class="quote-icon"><i class="fas fa-quote-right"></i></span>';
+      html += '<div class="author-info">';
+      if (p.image) html += '<img class="avatar" src="' + p.image + '" alt=""/>';
+      html += '<div><div class="author-name">' + p.author + '</div><div class="author-role">কলামিস্ট</div></div></div>';
+      html += '<blockquote>"' + p.title + '"</blockquote></div>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  });
+
+  // === 3-Tab Sidebar Widget ===
+  var tabData = { popular: [], sports: [], latest: [] };
+  var tabLoaded = 0;
+  function checkTabsReady() {
+    tabLoaded++;
+    if (tabLoaded >= 3) buildTabs();
+  }
+  fetchLabel('জাতীয়', 5, function(posts) { tabData.popular = posts; checkTabsReady(); });
+  fetchLabel('খেলা', 5, function(posts) { tabData.sports = posts; checkTabsReady(); });
+  // Latest - fetch from default feed
+  (function() {
+    var url = BLOG_URL + '/feeds/posts/default?alt=json&max-results=8&callback=latestCb';
+    var s = document.createElement('script');
+    window.latestCb = function(data) {
+      var posts = [];
+      if (data.feed && data.feed.entry) {
+        data.feed.entry.forEach(function(e) {
+          var link = '';
+          e.link.forEach(function(l) { if (l.rel === 'alternate') link = l.href; });
+          posts.push({ title: e.title.$t, url: link, date: e.published.$t.substring(0, 10) });
+        });
+      }
+      tabData.latest = posts;
+      checkTabsReady();
+      delete window.latestCb;
+      s.remove();
+    };
+    document.body.appendChild(s);
+    s.src = url;
+  })();
+
+  function buildTabs() {
+    var el = document.getElementById('sidebar-tabs');
+    if (!el) return;
+    var html = '<div class="tab-headers">';
+    html += '<button class="tab-btn active" onclick="switchTab(0,this)">🔥 জনপ্রিয়</button>';
+    html += '<button class="tab-btn" onclick="switchTab(1,this)">⚽ খেলা</button>';
+    html += '<button class="tab-btn" onclick="switchTab(2,this)">🕐 সর্বশেষ</button>';
+    html += '</div>';
+
+    // Tab 0: Popular
+    html += '<div class="tab-content tab-panel" data-tab="0">';
+    tabData.popular.forEach(function(p) {
+      html += '<a href="' + p.url + '" class="tab-post">';
+      if (p.image) html += '<div class="thumb"><img src="' + p.image + '" alt=""/></div>';
+      html += '<div><h4>' + p.title + '</h4><span class="date">' + p.date + '</span></div></a>';
+    });
+    html += '</div>';
+
+    // Tab 1: Sports
+    html += '<div class="tab-content tab-panel" data-tab="1" style="display:none">';
+    tabData.sports.forEach(function(p) {
+      html += '<a href="' + p.url + '" class="tab-post">';
+      if (p.image) html += '<div class="thumb"><img src="' + p.image + '" alt=""/></div>';
+      html += '<div><h4>' + p.title + '</h4><span class="date">' + p.date + '</span></div></a>';
+    });
+    html += '</div>';
+
+    // Tab 2: Latest (scrollable)
+    html += '<div class="tab-content tab-panel" data-tab="2" data-scroll="true" style="display:none">';
+    tabData.latest.forEach(function(p, i) {
+      html += '<a href="' + p.url + '" class="tab-post">';
+      html += '<span class="num">' + (i + 1) + '</span>';
+      html += '<div><h4>' + p.title + '</h4><span class="date">' + p.date + '</span></div></a>';
+    });
+    html += '</div>';
+
+    el.innerHTML = html;
+  }
+
+  window.switchTab = function(idx, btn) {
+    var widget = btn.closest('.tab-widget');
+    widget.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    widget.querySelectorAll('.tab-panel').forEach(function(p) { p.style.display = 'none'; });
+    widget.querySelector('[data-tab="' + idx + '"]').style.display = '';
+  };
+
+  // === ইতিহাসের এই দিনে (Wikipedia On This Day) ===
+  (function() {
+    var today = new Date();
+    var month = String(today.getMonth() + 1).padStart(2, '0');
+    var day = String(today.getDate()).padStart(2, '0');
+    var el = document.getElementById('onthisday-widget');
+    if (!el) return;
+
+    // Bangla date
+    function toBn(n) { return String(n).replace(/[0-9]/g, function(m) { return '০১২৩৪৫৬৭৮৯'[m]; }); }
+    var bnMonths = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+    var todayStr = toBn(today.getDate()) + ' ' + bnMonths[today.getMonth()];
+
+    // Header
+    var html = '<div class="onthisday-header"><span class="icon">📜</span><div><h3>ইতিহাসের এই দিনে</h3><span class="today">' + todayStr + '</span></div></div>';
+    html += '<div class="onthisday-tabs">';
+    html += '<button class="onthisday-tab active" onclick="switchOTD(0,this)"><i class="fas fa-calendar-alt"></i> ঘটনাবলি</button>';
+    html += '<button class="onthisday-tab" onclick="switchOTD(1,this)"><i class="fas fa-comment-dots"></i> উক্তি</button>';
+    html += '</div>';
+    html += '<div class="onthisday-content otd-panel" data-otd="0" id="otd-events">লোড হচ্ছে...</div>';
+    html += '<div class="onthisday-content otd-panel" data-otd="1" id="otd-quotes" style="display:none">লোড হচ্ছে...</div>';
+    html += '<div class="onthisday-source">উৎস: উইকিপিডিয়া</div>';
+    el.innerHTML = html;
+
+    // Fetch from Wikipedia
+    fetch('https://api.wikimedia.org/feed/v1/wikipedia/bn/onthisday/all/' + month + '/' + day, {
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      // Events
+      var events = (data.events || data.selected || []).slice(0, 15);
+      var evHTML = '';
+      events.forEach(function(e) {
+        evHTML += '<div class="onthisday-event">';
+        evHTML += '<span class="onthisday-year">' + (e.year ? toBn(Math.abs(e.year)) : '') + '</span>';
+        evHTML += '<p>' + (e.text || '') + '</p></div>';
+      });
+      if (!evHTML) evHTML = '<p style="color:var(--muted);font-size:13px">আজকের জন্য কোনো ঘটনা পাওয়া যায়নি।</p>';
+      document.getElementById('otd-events').innerHTML = evHTML;
+
+      // Births as quotes
+      var births = (data.births || []).slice(0, 10);
+      var qHTML = '';
+      births.forEach(function(b) {
+        var name = b.pages && b.pages[0] ? b.pages[0].normalizedtitle || b.pages[0].title : 'অজানা';
+        qHTML += '<div class="onthisday-quote"><blockquote>"' + (b.text || '') + '"</blockquote>';
+        qHTML += '<div class="author">— ' + name + '</div></div>';
+      });
+      if (!qHTML) qHTML = '<p style="color:var(--muted);font-size:13px">আজকের জন্য কোনো উক্তি পাওয়া যায়নি।</p>';
+      document.getElementById('otd-quotes').innerHTML = qHTML;
+    })
+    .catch(function() {
+      document.getElementById('otd-events').innerHTML = '<p style="color:var(--muted);font-size:13px">ডাটা লোড করা যায়নি।</p>';
+      document.getElementById('otd-quotes').innerHTML = '<p style="color:var(--muted);font-size:13px">ডাটা লোড করা যায়নি।</p>';
+    });
+  })();
+
+  window.switchOTD = function(idx, btn) {
+    var widget = btn.closest('.onthisday-widget');
+    widget.querySelectorAll('.onthisday-tab').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    widget.querySelectorAll('.otd-panel').forEach(function(p) { p.style.display = 'none'; });
+    widget.querySelector('[data-otd="' + idx + '"]').style.display = '';
+  };
+
+})();
+//]]>
+</script>
+
+</body>
+</html>

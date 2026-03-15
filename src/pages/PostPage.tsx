@@ -1,0 +1,80 @@
+import { useParams, Link } from "react-router-dom";
+import { ArrowLeft, Share2, Clock } from "lucide-react";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+import LabelBadge from "@/components/LabelBadge";
+import NewsCard from "@/components/NewsCard";
+import { mockPosts } from "@/lib/mockData";
+
+const PostPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const post = mockPosts.find(p => p.id === id);
+  const related = mockPosts.filter(p => p.label === post?.label && p.id !== id).slice(0, 3);
+
+  if (!post) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <div className="container py-20 text-center">
+          <p className="text-muted-foreground">খবরটি পাওয়া যায়নি।</p>
+          <Link to="/" className="text-primary text-sm mt-4 inline-block">← প্রচ্ছদে ফিরুন</Link>
+        </div>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <main className="container py-6">
+        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors mb-4">
+          <ArrowLeft size={14} /> প্রচ্ছদ
+        </Link>
+
+        <article className="max-w-3xl">
+          <LabelBadge label={post.label} />
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mt-2 leading-tight">{post.title}</h1>
+          <div className="flex items-center gap-3 mt-3 text-sm text-muted-foreground">
+            <span>{post.author}</span>
+            <span>·</span>
+            <span>{post.date}</span>
+            <span>·</span>
+            <span className="flex items-center gap-1"><Clock size={12} /> {post.readTime} পাঠ</span>
+            <button className="ml-auto p-1.5 rounded-sm hover:bg-muted transition-colors" aria-label="Share">
+              <Share2 size={16} />
+            </button>
+          </div>
+
+          <div className="mt-5 rounded-sm overflow-hidden">
+            <img src={post.image} alt={post.title} className="w-full aspect-[16/9] object-cover" />
+          </div>
+
+          <div className="mt-6 text-foreground leading-[1.8] space-y-4">
+            <p>{post.excerpt}</p>
+            <p>এটি একটি ডেমো পোস্ট। ব্লগার থিমে এই কন্টেন্ট ব্লগার API থেকে ডায়নামিক্যালি লোড হবে। প্রতিটি পোস্টের জন্য লেবেল, তারিখ, লেখক এবং সম্পূর্ণ বিষয়বস্তু ব্লগার ড্যাশবোর্ড থেকে পরিচালিত হবে।</p>
+            <p>গলাচিপাপ্রতিদিন সবসময় সঠিক ও নিরপেক্ষ সংবাদ পরিবেশনে প্রতিশ্রুতিবদ্ধ। আমাদের সাথে থাকুন।</p>
+          </div>
+        </article>
+
+        {/* Related */}
+        {related.length > 0 && (
+          <section className="mt-10 border-t border-border pt-6">
+            <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+              <div className="w-3 h-3 bg-primary rounded-sm" />
+              সম্পর্কিত খবর
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {related.map((p, i) => (
+                <NewsCard key={p.id} post={p} index={i} />
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+      <SiteFooter />
+    </div>
+  );
+};
+
+export default PostPage;
