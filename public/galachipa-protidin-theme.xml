@@ -531,38 +531,58 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <button class='mobile-menu-btn' onclick='document.querySelector(&apos;.nav-list&apos;).classList.toggle(&apos;open&apos;)'>
 <i class='fas fa-bars'/>
 </button>
-<b:section id='navigation' maxwidgets='1' showaddelement='yes'>
-<b:widget id='LinkList1' locked='false' title='Navigation' type='LinkList' version='2'>
-<b:includable id='main'>
+
+<!-- Always-visible default menu -->
 <ul class='nav-list' id='main-nav-list'>
 <li><a expr:href='data:blog.homepageUrl'>প্রচ্ছদ</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/জাতীয়&quot;'>জাতীয়</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রাজনীতি&quot;'>রাজনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আলোচিত&quot;'>আলোচিত</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সারাদেশ&quot;'>সারাদেশ</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আন্তর্জাতিক&quot;'>আন্তর্জাতিক</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/খেলা&quot;'>খেলা</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/বিনোদন&quot;'>বিনোদন</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/প্রযুক্তি&quot;'>প্রযুক্তি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/অর্থনীতি&quot;'>অর্থনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সাহিত্য&quot;'>সাহিত্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রকমারি&quot;'>রকমারি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/স্বাস্থ্য&quot;'>স্বাস্থ্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/মতামত&quot;'>মতামত</a></li>
+</ul>
+
+<!-- Optional dashboard-managed links source (if configured, overrides default menu items) -->
+<b:section id='navigation-data' maxwidgets='1' showaddelement='yes'>
+<b:widget id='LinkList1' locked='false' title='Navigation' type='LinkList' version='2'>
+<b:includable id='main'>
+<ul id='dashboard-nav-links' style='display:none'>
 <b:loop values='data:links' var='link'>
 <li><a expr:href='data:link.target'><data:link.name/></a></li>
 </b:loop>
 </ul>
-<!-- Fallback: if no links configured, show default menu via JS -->
-<script>
-//<![CDATA[
-(function(){
-  var ul = document.querySelector('.nav-list');
-  if (ul && ul.children.length <= 1) {
-    var defaultLabels = ['জাতীয়','রাজনীতি','আলোচিত','সারাদেশ','আন্তর্জাতিক','খেলা','বিনোদন','প্রযুক্তি','অর্থনীতি','সাহিত্য','রকমারি','স্বাস্থ্য','মতামত'];
-    var base = window.location.origin || (window.location.protocol + '//' + window.location.host);
-    defaultLabels.forEach(function(l){
-      var li = document.createElement('li');
-      var a = document.createElement('a');
-      a.href = base + '/search/label/' + encodeURIComponent(l);
-      a.textContent = l;
-      li.appendChild(a);
-      ul.appendChild(li);
-    });
-  }
-})();
-//]]>
-</script>
 </b:includable>
 </b:widget>
 </b:section>
+
+<script>
+//<![CDATA[
+(function(){
+  var main = document.getElementById('main-nav-list');
+  var dash = document.getElementById('dashboard-nav-links');
+  if (!main || !dash || dash.children.length === 0) return;
+
+  var html = '';
+  var home = main.querySelector('li');
+  if (home) html += home.outerHTML;
+
+  Array.prototype.forEach.call(dash.querySelectorAll('a'), function(a){
+    html += '<li><a href="' + a.getAttribute('href') + '">' + a.textContent + '</a></li>';
+  });
+
+  if (html) main.innerHTML = html;
+})();
+//]]>
+</script>
+
 <button class='nav-search' onclick='document.querySelector(&apos;.search-widget&apos;).classList.toggle(&apos;active&apos;)'>
 <i class='fas fa-search'/>
 </button>
