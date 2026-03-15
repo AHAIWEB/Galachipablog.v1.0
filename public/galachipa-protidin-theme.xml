@@ -80,7 +80,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .site-tagline { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
 /* === Navigation === */
-.main-nav { background: var(--card); border-bottom: 1px solid var(--border); }
+.main-nav { background: var(--card); border-bottom: 1px solid var(--border); position: relative; }
 .main-nav .container { display: flex; align-items: center; justify-content: space-between; }
 .nav-list { display: flex; list-style: none; flex-wrap: wrap; }
 .nav-list li a { display: block; padding: 10px 14px; font-size: 14px; font-weight: 500; color: rgba(10,10,11,0.8); transition: color 0.2s; white-space: nowrap; }
@@ -88,6 +88,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .nav-list li:first-child a { font-weight: 600; color: var(--foreground); }
 .nav-search { padding: 8px; color: var(--muted); cursor: pointer; background: none; border: none; font-size: 18px; }
 .mobile-menu-btn { display: none; padding: 8px; background: none; border: none; font-size: 20px; color: var(--foreground); cursor: pointer; }
+
+/* === Search Widget === */
+.search-widget { display: none; background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 0; }
+.search-widget.active { display: block; }
+.search-widget .container { display: flex; gap: 8px; }
+.search-widget input { flex: 1; padding: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; font-family: inherit; outline: none; }
+.search-widget input:focus { border-color: var(--primary); }
+.search-widget button { background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: var(--radius); font-size: 14px; font-family: inherit; font-weight: 600; cursor: pointer; }
 
 /* === Breaking News Ticker === */
 .breaking-ticker { background: var(--card); border-bottom: 1px solid var(--border); overflow: hidden; }
