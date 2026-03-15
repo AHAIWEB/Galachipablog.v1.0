@@ -343,7 +343,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .carousel-inner { display: flex; gap: 16px; transition: transform 0.3s ease; }
 .carousel-card { flex: 0 0 calc(25% - 12px); }
 .carousel-card .thumb { overflow: hidden; border-radius: 6px; }
-.carousel-card .thumb img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.carousel-card .thumb img { width: 100%; aspect-ratio: 19/9; object-fit: cover; }
 .carousel-card .label-badge { margin-top: 8px; }
 .carousel-card h3 { font-size: 14px; margin-top: 4px; line-height: 1.35; }
 .carousel-card .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
@@ -531,38 +531,58 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <button class='mobile-menu-btn' onclick='document.querySelector(&apos;.nav-list&apos;).classList.toggle(&apos;open&apos;)'>
 <i class='fas fa-bars'/>
 </button>
-<b:section id='navigation' maxwidgets='1' showaddelement='yes'>
-<b:widget id='LinkList1' locked='false' title='Navigation' type='LinkList' version='2'>
-<b:includable id='main'>
+
+<!-- Always-visible default menu -->
 <ul class='nav-list' id='main-nav-list'>
 <li><a expr:href='data:blog.homepageUrl'>প্রচ্ছদ</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/জাতীয়&quot;'>জাতীয়</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রাজনীতি&quot;'>রাজনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আলোচিত&quot;'>আলোচিত</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সারাদেশ&quot;'>সারাদেশ</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আন্তর্জাতিক&quot;'>আন্তর্জাতিক</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/খেলা&quot;'>খেলা</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/বিনোদন&quot;'>বিনোদন</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/প্রযুক্তি&quot;'>প্রযুক্তি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/অর্থনীতি&quot;'>অর্থনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সাহিত্য&quot;'>সাহিত্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রকমারি&quot;'>রকমারি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/স্বাস্থ্য&quot;'>স্বাস্থ্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/মতামত&quot;'>মতামত</a></li>
+</ul>
+
+<!-- Optional dashboard-managed links source (if configured, overrides default menu items) -->
+<b:section id='navigation-data' maxwidgets='1' showaddelement='yes'>
+<b:widget id='LinkList1' locked='false' title='Navigation' type='LinkList' version='2'>
+<b:includable id='main'>
+<ul id='dashboard-nav-links' style='display:none'>
 <b:loop values='data:links' var='link'>
 <li><a expr:href='data:link.target'><data:link.name/></a></li>
 </b:loop>
 </ul>
-<!-- Fallback: if no links configured, show default menu via JS -->
-<script>
-//<![CDATA[
-(function(){
-  var ul = document.querySelector('.nav-list');
-  if (ul && ul.children.length <= 1) {
-    var defaultLabels = ['জাতীয়','রাজনীতি','আলোচিত','সারাদেশ','আন্তর্জাতিক','খেলা','বিনোদন','প্রযুক্তি','অর্থনীতি','সাহিত্য','রকমারি','স্বাস্থ্য','মতামত'];
-    var base = window.location.origin || (window.location.protocol + '//' + window.location.host);
-    defaultLabels.forEach(function(l){
-      var li = document.createElement('li');
-      var a = document.createElement('a');
-      a.href = base + '/search/label/' + encodeURIComponent(l);
-      a.textContent = l;
-      li.appendChild(a);
-      ul.appendChild(li);
-    });
-  }
-})();
-//]]>
-</script>
 </b:includable>
 </b:widget>
 </b:section>
+
+<script>
+//<![CDATA[
+(function(){
+  var main = document.getElementById('main-nav-list');
+  var dash = document.getElementById('dashboard-nav-links');
+  if (!main || !dash || dash.children.length === 0) return;
+
+  var html = '';
+  var home = main.querySelector('li');
+  if (home) html += home.outerHTML;
+
+  Array.prototype.forEach.call(dash.querySelectorAll('a'), function(a){
+    html += '<li><a href="' + a.getAttribute('href') + '">' + a.textContent + '</a></li>';
+  });
+
+  if (html) main.innerHTML = html;
+})();
+//]]>
+</script>
+
 <button class='nav-search' onclick='document.querySelector(&apos;.search-widget&apos;).classList.toggle(&apos;active&apos;)'>
 <i class='fas fa-search'/>
 </button>
@@ -638,42 +658,51 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <script>
 //<![CDATA[
 (function(){
-  var grid = document.getElementById('top-news-home');
-  if (!grid) return;
-  var items = Array.prototype.slice.call(grid.querySelectorAll('.top-news-item'));
-  if (items.length === 0) return;
+  function buildTopNewsLayout() {
+    var grid = document.getElementById('top-news-home');
+    if (!grid) return;
 
-  // Clear grid
-  grid.innerHTML = '';
+    var items = Array.prototype.slice.call(grid.querySelectorAll('.top-news-item'));
+    if (items.length === 0) return;
 
-  // First item = main hero (left 7fr column)
-  var mainDiv = document.createElement('div');
-  mainDiv.className = 'top-news-main news-entrance';
-  var m = items[0];
-  m.style.display = '';
-  // Make hero title h2 instead of h3
-  var mH3 = m.querySelector('h3');
-  if (mH3) {
-    var mH2 = document.createElement('h2');
-    mH2.innerHTML = mH3.innerHTML;
-    mH3.parentNode.replaceChild(mH2, mH3);
+    grid.innerHTML = '';
+
+    // First item = main hero
+    var mainDiv = document.createElement('div');
+    mainDiv.className = 'top-news-main news-entrance';
+    var mainItem = items[0];
+    mainItem.style.display = '';
+
+    var mainH3 = mainItem.querySelector('h3');
+    if (mainH3) {
+      var mainH2 = document.createElement('h2');
+      mainH2.innerHTML = mainH3.innerHTML;
+      mainH3.parentNode.replaceChild(mainH2, mainH3);
+    }
+
+    mainDiv.innerHTML = mainItem.innerHTML;
+    grid.appendChild(mainDiv);
+
+    // Side cards
+    var side = document.createElement('div');
+    side.className = 'top-news-side';
+
+    for (var i = 1; i < Math.min(items.length, 5); i++) {
+      var card = document.createElement('div');
+      card.className = 'top-news-side-card news-entrance';
+      items[i].style.display = '';
+      card.innerHTML = items[i].innerHTML;
+      side.appendChild(card);
+    }
+
+    grid.appendChild(side);
   }
-  mainDiv.innerHTML = m.innerHTML;
-  grid.appendChild(mainDiv);
 
-  // Side container (right 5fr column, 2x2 grid)
-  var side = document.createElement('div');
-  side.className = 'top-news-side';
-
-  for (var i = 1; i < Math.min(items.length, 5); i++) {
-    var card = document.createElement('div');
-    card.className = 'top-news-side-card news-entrance';
-    items[i].style.display = '';
-    card.innerHTML = items[i].innerHTML;
-    side.appendChild(card);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildTopNewsLayout);
+  } else {
+    buildTopNewsLayout();
   }
-
-  grid.appendChild(side);
 })();
 //]]>
 </script>
@@ -968,21 +997,51 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 
     function parsePosts(data) {
       var posts = [];
+      var FALLBACK_IMAGE = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"><rect fill="#f4f4f5" width="1200" height="675"/><text x="50%" y="50%" fill="#a1a1aa" font-family="Arial,sans-serif" font-size="42" text-anchor="middle" dominant-baseline="middle">গলাচিপা প্রতিদিন</text></svg>');
+
+      function extractImageFromHtml(html) {
+        if (!html) return '';
+        var match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+        return match && match[1] ? match[1] : '';
+      }
+
+      function normalizeImage(url) {
+        if (!url) return '';
+        if (url.indexOf('//') === 0) return window.location.protocol + url;
+        return url;
+      }
+
+      function stripHtml(text) {
+        return (text || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      }
+
       if (data.feed && data.feed.entry) {
         data.feed.entry.forEach(function(e) {
           var link = '';
-          e.link.forEach(function(l) { if (l.rel === 'alternate') link = l.href; });
+          if (e.link) e.link.forEach(function(l) { if (l.rel === 'alternate') link = l.href; });
+
           var img = '';
-          if (e.media$thumbnail) img = e.media$thumbnail.url.replace(/s72-c/, 's600-c');
+          if (e.media$thumbnail && e.media$thumbnail.url) {
+            img = e.media$thumbnail.url.replace(/s72-c/, 's600-c');
+          }
+          if (!img && e.media$content && e.media$content.length && e.media$content[0].url) {
+            img = e.media$content[0].url;
+          }
+
+          var rawContent = (e.content && e.content.$t) || (e.summary && e.summary.$t) || '';
+          if (!img) img = extractImageFromHtml(rawContent);
+          img = normalizeImage(img) || FALLBACK_IMAGE;
+
           var labels = [];
           if (e.category) e.category.forEach(function(c) { labels.push(c.term); });
+
           posts.push({
-            title: e.title.$t,
+            title: e.title && e.title.$t ? e.title.$t : '',
             url: link,
             image: img,
-            excerpt: e.summary ? e.summary.$t.substring(0, 100) : '',
-            author: e.author[0].name.$t,
-            date: e.published.$t.substring(0, 10),
+            excerpt: stripHtml(rawContent).substring(0, 100),
+            author: e.author && e.author[0] && e.author[0].name ? e.author[0].name.$t : 'গলাচিপা প্রতিদিন',
+            date: e.published && e.published.$t ? e.published.$t.substring(0, 10) : '',
             labels: labels
           });
         });
