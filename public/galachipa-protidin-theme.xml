@@ -724,45 +724,41 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <div class='main-layout'>
 <div class='content-area'>
 
-<!-- Auto Label Widgets (visible in Blogger Layout) -->
-<b:section id='auto-label-sections' maxwidgets='12' showaddelement='no'>
-  <b:widget id='HTML101' locked='true' title='রাজনীতি সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='politics-section' id='sec-politics'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML102' locked='true' title='আলোচিত সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='trending-section' id='sec-trending'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML103' locked='true' title='জাতীয় সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='national-section' id='sec-national'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML104' locked='true' title='এডিটর পিক সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='editor-pick' id='sec-editor-pick'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML105' locked='true' title='বিনোদন সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='entertainment-section' id='sec-entertainment'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML106' locked='true' title='খেলা সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='sports-section' id='sec-sports'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML107' locked='true' title='প্রযুক্তি সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='tech-section' id='sec-tech'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML108' locked='true' title='সাহিত্য সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='literature-section' id='sec-literature'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML109' locked='true' title='রকমারি সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='rokomari-section' id='sec-rokomari'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML110' locked='true' title='স্বাস্থ্য সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='health-section' id='sec-health'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML111' locked='true' title='আন্তর্জাতিক সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='international-section' id='sec-international'></div></b:includable>
-  </b:widget>
-  <b:widget id='HTML112' locked='true' title='মতামত সেকশন' type='HTML' version='2'>
-    <b:includable id='main'><div class='opinion-section' id='sec-opinion'></div></b:includable>
-  </b:widget>
-</b:section>
+<!-- রাজনীতি (Parliament/Debate) -->
+<div class='politics-section' id='sec-politics'></div>
+
+<!-- আলোচিত (Trending/Viral) -->
+<div class='trending-section' id='sec-trending'></div>
+
+<!-- জাতীয় (Timeline) -->
+<div class='national-section' id='sec-national'></div>
+
+<!-- এডিটর পিক (Carousel) -->
+<div class='editor-pick' id='sec-editor-pick'></div>
+
+<!-- বিনোদন (Cinema Reel) -->
+<div class='entertainment-section' id='sec-entertainment'></div>
+
+<!-- খেলা (Horizontal Cards) -->
+<div class='sports-section' id='sec-sports'></div>
+
+<!-- প্রযুক্তি (Masonry) -->
+<div class='tech-section' id='sec-tech'></div>
+
+<!-- সাহিত্য (Magazine) -->
+<div class='literature-section' id='sec-literature'></div>
+
+<!-- রকমারি (Zigzag) -->
+<div class='rokomari-section' id='sec-rokomari'></div>
+
+<!-- স্বাস্থ্য (Health Cards) -->
+<div class='health-section' id='sec-health'></div>
+
+<!-- আন্তর্জাতিক (Dark Globe) -->
+<div class='international-section' id='sec-international'></div>
+
+<!-- মতামত (Opinion / Quotes) -->
+<div class='opinion-section' id='sec-opinion'></div>
 
 </div>
 
