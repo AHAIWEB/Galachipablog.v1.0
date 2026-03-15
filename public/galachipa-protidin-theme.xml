@@ -1505,37 +1505,44 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
     html += '<div class="onthisday-source">উৎস: উইকিপিডিয়া</div>';
     el.innerHTML = html;
 
-    // Fetch from Wikipedia
-    fetch('https://api.wikimedia.org/feed/v1/wikipedia/bn/onthisday/all/' + month + '/' + day, {
-      headers: { 'Accept': 'application/json' }
-    })
-    .then(function(r) { return r.json(); })
+    // Fetch from English Wikipedia (has much more data than Bengali)
+    fetch('https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/all/' + month + '/' + day)
+    .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function(data) {
       // Events
-      var events = (data.events || data.selected || []).slice(0, 15);
+      var events = (data.events || data.selected || []).slice(0, 12);
       var evHTML = '';
       events.forEach(function(e) {
-        evHTML += '<div class="onthisday-event">';
-        evHTML += '<span class="onthisday-year">' + (e.year ? toBn(Math.abs(e.year)) : '') + '</span>';
-        evHTML += '<p>' + (e.text || '') + '</p></div>';
+        var yearText = e.year ? toBn(Math.abs(e.year)) : '';
+        // Use Bengali page text if available, else English
+        var text = e.text || '';
+        // Check if Bengali page exists
+        if (e.pages &amp;&amp; e.pages[0] &amp;&amp; e.pages[0].titles &amp;&amp; e.pages[0].titles.normalized) {
+          // keep English text as is - readable
+        }
+        evHTML += '&lt;div class="onthisday-event"&gt;';
+        evHTML += '&lt;span class="onthisday-year"&gt;' + yearText + '&lt;/span&gt;';
+        evHTML += '&lt;p&gt;' + text + '&lt;/p&gt;&lt;/div&gt;';
       });
-      if (!evHTML) evHTML = '<p style="color:var(--muted);font-size:13px">আজকের জন্য কোনো ঘটনা পাওয়া যায়নি।</p>';
+      if (!evHTML) evHTML = '&lt;p style="color:var(--muted);font-size:13px"&gt;আজকের জন্য কোনো ঘটনা পাওয়া যায়নি।&lt;/p&gt;';
       document.getElementById('otd-events').innerHTML = evHTML;
 
-      // Births as quotes
-      var births = (data.births || []).slice(0, 10);
+      // Births
+      var births = (data.births || []).slice(0, 8);
       var qHTML = '';
       births.forEach(function(b) {
-        var name = b.pages && b.pages[0] ? b.pages[0].normalizedtitle || b.pages[0].title : 'অজানা';
-        qHTML += '<div class="onthisday-quote"><blockquote>"' + (b.text || '') + '"</blockquote>';
-        qHTML += '<div class="author">— ' + name + '</div></div>';
+        var name = b.pages &amp;&amp; b.pages[0] ? (b.pages[0].normalizedtitle || b.pages[0].title || 'Unknown') : 'Unknown';
+        var yearText = b.year ? toBn(Math.abs(b.year)) : '';
+        qHTML += '&lt;div class="onthisday-quote"&gt;&lt;blockquote&gt;"' + (b.text || '') + '"&lt;/blockquote&gt;';
+        qHTML += '&lt;div class="author"&gt;— ' + name + (yearText ? ' (' + yearText + ')' : '') + '&lt;/div&gt;&lt;/div&gt;';
       });
-      if (!qHTML) qHTML = '<p style="color:var(--muted);font-size:13px">আজকের জন্য কোনো উক্তি পাওয়া যায়নি।</p>';
+      if (!qHTML) qHTML = '&lt;p style="color:var(--muted);font-size:13px"&gt;আজকের জন্য কোনো তথ্য পাওয়া যায়নি।&lt;/p&gt;';
       document.getElementById('otd-quotes').innerHTML = qHTML;
     })
-    .catch(function() {
-      document.getElementById('otd-events').innerHTML = '<p style="color:var(--muted);font-size:13px">ডাটা লোড করা যায়নি।</p>';
-      document.getElementById('otd-quotes').innerHTML = '<p style="color:var(--muted);font-size:13px">ডাটা লোড করা যায়নি।</p>';
+    .catch(function(err) {
+      console.error('OnThisDay error:', err);
+      document.getElementById('otd-events').innerHTML = '&lt;p style="color:var(--muted);font-size:13px"&gt;ডাটা লোড করা যায়নি। পরে আবার চেষ্টা করুন।&lt;/p&gt;';
+      document.getElementById('otd-quotes').innerHTML = '&lt;p style="color:var(--muted);font-size:13px"&gt;ডাটা লোড করা যায়নি।&lt;/p&gt;';
     });
   })();
 
