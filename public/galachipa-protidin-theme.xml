@@ -997,21 +997,51 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 
     function parsePosts(data) {
       var posts = [];
+      var FALLBACK_IMAGE = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"><rect fill="#f4f4f5" width="1200" height="675"/><text x="50%" y="50%" fill="#a1a1aa" font-family="Arial,sans-serif" font-size="42" text-anchor="middle" dominant-baseline="middle">গলাচিপা প্রতিদিন</text></svg>');
+
+      function extractImageFromHtml(html) {
+        if (!html) return '';
+        var match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+        return match && match[1] ? match[1] : '';
+      }
+
+      function normalizeImage(url) {
+        if (!url) return '';
+        if (url.indexOf('//') === 0) return window.location.protocol + url;
+        return url;
+      }
+
+      function stripHtml(text) {
+        return (text || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      }
+
       if (data.feed && data.feed.entry) {
         data.feed.entry.forEach(function(e) {
           var link = '';
-          e.link.forEach(function(l) { if (l.rel === 'alternate') link = l.href; });
+          if (e.link) e.link.forEach(function(l) { if (l.rel === 'alternate') link = l.href; });
+
           var img = '';
-          if (e.media$thumbnail) img = e.media$thumbnail.url.replace(/s72-c/, 's600-c');
+          if (e.media$thumbnail && e.media$thumbnail.url) {
+            img = e.media$thumbnail.url.replace(/s72-c/, 's600-c');
+          }
+          if (!img && e.media$content && e.media$content.length && e.media$content[0].url) {
+            img = e.media$content[0].url;
+          }
+
+          var rawContent = (e.content && e.content.$t) || (e.summary && e.summary.$t) || '';
+          if (!img) img = extractImageFromHtml(rawContent);
+          img = normalizeImage(img) || FALLBACK_IMAGE;
+
           var labels = [];
           if (e.category) e.category.forEach(function(c) { labels.push(c.term); });
+
           posts.push({
-            title: e.title.$t,
+            title: e.title && e.title.$t ? e.title.$t : '',
             url: link,
             image: img,
-            excerpt: e.summary ? e.summary.$t.substring(0, 100) : '',
-            author: e.author[0].name.$t,
-            date: e.published.$t.substring(0, 10),
+            excerpt: stripHtml(rawContent).substring(0, 100),
+            author: e.author && e.author[0] && e.author[0].name ? e.author[0].name.$t : 'গলাচিপা প্রতিদিন',
+            date: e.published && e.published.$t ? e.published.$t.substring(0, 10) : '',
             labels: labels
           });
         });
