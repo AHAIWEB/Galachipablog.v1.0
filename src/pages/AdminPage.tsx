@@ -39,6 +39,8 @@ interface Post {
 }
 
 const AdminPage = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [filterLabel, setFilterLabel] = useState<string>("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
