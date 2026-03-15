@@ -555,6 +555,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 </div>
 </nav>
 
+<!-- Search Widget -->
+<div class='search-widget' id='search-widget'>
+<div class='container'>
+<form expr:action='data:blog.searchUrl' method='get' style='display:flex;gap:8px;width:100%'>
+<input name='q' placeholder='খবর খুঁজুন...' type='text'/>
+<button type='submit'>খুঁজুন</button>
+</form>
+</div>
+</div>
+
 <!-- Breaking Ticker -->
 <div class='breaking-ticker'>
 <div class='container'>
