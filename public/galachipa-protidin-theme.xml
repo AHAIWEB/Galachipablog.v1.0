@@ -341,9 +341,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .carousel-btn:hover { border-color: var(--primary); color: var(--primary); }
 .carousel-track { overflow: hidden; }
 .carousel-inner { display: flex; gap: 16px; transition: transform 0.3s ease; }
-.carousel-card { flex: 0 0 calc(25% - 12px); }
+.carousel-card { flex: 0 0 calc(33.333% - 11px); }
 .carousel-card .thumb { overflow: hidden; border-radius: 6px; }
-.carousel-card .thumb img { width: 100%; aspect-ratio: 19/9; object-fit: cover; }
+.carousel-card .thumb img { width: 100%; aspect-ratio: 21/9; object-fit: cover; }
 .carousel-card .label-badge { margin-top: 8px; }
 .carousel-card h3 { font-size: 14px; margin-top: 4px; line-height: 1.35; }
 .carousel-card .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
