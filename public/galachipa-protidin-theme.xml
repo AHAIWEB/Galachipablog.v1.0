@@ -785,6 +785,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 </div>
 </b:includable>
 </b:widget>
+
+<b:widget id='LabelSidebar1' locked='false' title='সব লেবেল' type='Label' version='2'>
+<b:includable id='main'>
+<div class='widget'>
+<div class='widget-title'><span class='dot'/> <data:title/></div>
+<ul>
+<b:loop values='data:labels' var='label'>
+<li style='border-bottom:1px solid var(--border);'>
+<a expr:href='data:label.url' style='display:flex;justify-content:space-between;align-items:center;padding:8px 0;'>
+<span><data:label.name/></span>
+<span style='font-size:11px;color:var(--muted);'>(<data:label.count/>)</span>
+</a>
+</li>
+</b:loop>
+</ul>
+</div>
+</b:includable>
+</b:widget>
 </b:section>
 
 <!-- 3-Tab Widget (populated by JS) -->
