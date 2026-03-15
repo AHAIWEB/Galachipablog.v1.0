@@ -195,9 +195,15 @@ const AdminPage = () => {
               <span className="text-xs font-normal text-primary-foreground/50 ml-2">এডমিন প্যানেল</span>
             </h1>
           </div>
-          <Link to="/" className="text-xs text-primary-foreground/60 hover:text-primary-foreground flex items-center gap-1 transition-colors">
-            <Eye size={14} /> সাইট দেখুন
-          </Link>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-primary-foreground/50 hidden sm:inline">{user?.email}</span>
+            <button onClick={async () => { await signOut(); navigate("/login"); }} className="text-xs text-primary-foreground/60 hover:text-primary-foreground flex items-center gap-1 transition-colors">
+              <LogOut size={14} /> লগআউট
+            </button>
+            <Link to="/" className="text-xs text-primary-foreground/60 hover:text-primary-foreground flex items-center gap-1 transition-colors">
+              <Eye size={14} /> সাইট দেখুন
+            </Link>
+          </div>
         </div>
       </header>
 
