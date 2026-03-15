@@ -535,26 +535,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <b:includable id='main'>
 <ul class='nav-list'>
 <li><a expr:href='data:blog.homepageUrl'>প্রচ্ছদ</a></li>
-<b:if cond='data:links'>
 <b:loop values='data:links' var='link'>
 <li><a expr:href='data:link.target'><data:link.name/></a></li>
 </b:loop>
-<b:else/>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/জাতীয়&quot;'>জাতীয়</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/রাজনীতি&quot;'>রাজনীতি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/আলোচিত&quot;'>আলোচিত</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/সারাদেশ&quot;'>সারাদেশ</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/আন্তর্জাতিক&quot;'>আন্তর্জাতিক</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/খেলা&quot;'>খেলা</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/বিনোদন&quot;'>বিনোদন</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/প্রযুক্তি&quot;'>প্রযুক্তি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/অর্থনীতি&quot;'>অর্থনীতি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/সাহিত্য&quot;'>সাহিত্য</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/রকমারি&quot;'>রকমারি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/স্বাস্থ্য&quot;'>স্বাস্থ্য</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/মতামত&quot;'>মতামত</a></li>
-</b:if>
 </ul>
+<!-- Fallback: if no links configured, show default menu via JS -->
+<script>
+//<![CDATA[
+(function(){
+  var ul = document.querySelector('.nav-list');
+  if (ul && ul.children.length <= 1) {
+    var defaultLabels = ['জাতীয়','রাজনীতি','আলোচিত','সারাদেশ','আন্তর্জাতিক','খেলা','বিনোদন','প্রযুক্তি','অর্থনীতি','সাহিত্য','রকমারি','স্বাস্থ্য','মতামত'];
+    var base = window.location.origin || (window.location.protocol + '//' + window.location.host);
+    defaultLabels.forEach(function(l){
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = base + '/search/label/' + encodeURIComponent(l);
+      a.textContent = l;
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+  }
+})();
+//]]>
+</script>
 </b:includable>
 </b:widget>
 </b:section>
