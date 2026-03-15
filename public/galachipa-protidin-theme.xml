@@ -842,7 +842,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 
   // Helper: fetch posts by label via Blogger JSON feed
   function fetchLabel(label, count, callback) {
-    var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json&max-results=' + count;
+    var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json-in-script&max-results=' + count;
     var s = document.createElement('script');
     var cbName = 'cb_' + label.replace(/[^a-zA-Z\u0980-\u09FF]/g, '') + '_' + Date.now();
     url += '&callback=' + cbName;
