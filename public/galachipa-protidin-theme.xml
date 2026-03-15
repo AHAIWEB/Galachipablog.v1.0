@@ -846,6 +846,31 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 (function(){
   var BLOG_URL = window.location.origin;
 
+  // === Dynamic Navigation Menu from Blog Labels ===
+  (function(){
+    var navUrl = BLOG_URL + '/feeds/posts/summary?alt=json-in-script&max-results=0&callback=navLabelsCb';
+    var ns = document.createElement('script');
+    window.navLabelsCb = function(data) {
+      var nav = document.getElementById('dynamic-nav');
+      if (!nav || !data.feed || !data.feed.category) return;
+      var cats = data.feed.category;
+      // Sort by term alphabetically (Bangla)
+      cats.sort(function(a, b) { return a.term.localeCompare(b.term, 'bn'); });
+      cats.forEach(function(c) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = BLOG_URL + '/search/label/' + encodeURIComponent(c.term);
+        a.textContent = c.term;
+        li.appendChild(a);
+        nav.appendChild(li);
+      });
+      delete window.navLabelsCb;
+      ns.remove();
+    };
+    document.body.appendChild(ns);
+    ns.src = navUrl;
+  })();
+
   // Helper: fetch posts by label via Blogger JSON feed
   function fetchLabel(label, count, callback) {
     var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json-in-script&max-results=' + count;
