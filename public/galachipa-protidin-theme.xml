@@ -818,6 +818,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 </div>
 </b:includable>
 </b:widget>
+
+<b:widget id='Label2' locked='false' title='লেবেলসমূহ' type='Label' version='2'>
+<b:includable id='main'>
+<div class='widget'>
+<div class='widget-title'><span class='dot'/> <data:title/></div>
+<div class='label-widget-list'>
+<b:loop values='data:labels' var='label'>
+<a class='label-pill' expr:href='data:label.url'><data:label.name/></a>
+</b:loop>
+</div>
+</div>
+</b:includable>
+</b:widget>
 </b:section>
 
 <!-- 3-Tab Widget (populated by JS) -->
