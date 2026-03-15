@@ -46,7 +46,7 @@ const SectionHeader = ({ title, accent = "#e11d48", showMore = true }: { title: 
 const SmallCard = ({ post, hideLabel }: { post: typeof mockPosts[0]; hideLabel?: boolean }) => (
   <div>
     <div style={{ overflow: "hidden", borderRadius: 6 }}>
-      <img src={post.image} alt="" style={{ width: "100%", aspectRatio: "16/10", objectFit: "cover" }} />
+      <img src={post.image} alt="" style={{ width: "100%", aspectRatio: "4/3", objectFit: "cover" }} />
     </div>
     {!hideLabel && (
       <span style={{ display: "inline-block", background: "#fce7f3", color: "#e11d48", padding: "2px 8px", borderRadius: 2, fontSize: 11, fontWeight: 700, marginTop: 8 }}>{post.label}</span>

@@ -343,7 +343,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .carousel-inner { display: flex; gap: 16px; transition: transform 0.3s ease; }
 .carousel-card { flex: 0 0 calc(25% - 12px); }
 .carousel-card .thumb { overflow: hidden; border-radius: 6px; }
-.carousel-card .thumb img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+.carousel-card .thumb img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
 .carousel-card .label-badge { margin-top: 8px; }
 .carousel-card h3 { font-size: 14px; margin-top: 4px; line-height: 1.35; }
 .carousel-card .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
@@ -352,6 +352,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .sidebar .widget { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; box-shadow: var(--shadow-card); }
 .sidebar .widget-title { font-size: 15px; font-weight: 700; padding: 12px 16px 8px; border-bottom: 2px solid var(--primary); margin-bottom: 0; display: flex; align-items: center; gap: 6px; }
 .sidebar .widget-title .dot { width: 10px; height: 10px; background: var(--primary); border-radius: 2px; }
+.label-widget-list { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px 16px; }
+.label-widget-list .label-pill { display: inline-block; background: var(--primary-light); color: var(--primary); padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.label-widget-list .label-pill:hover { background: var(--primary); color: #fff; }
 
 /* 3-Tab Widget */
 .tab-widget { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
@@ -527,24 +530,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <button class='mobile-menu-btn' onclick='document.querySelector(&apos;.nav-list&apos;).classList.toggle(&apos;open&apos;)'>
 <i class='fas fa-bars'/>
 </button>
-<b:section id='navigation' maxwidgets='1' showaddelement='no'>
-<b:widget id='LinkList1' locked='true' title='Navigation' type='LinkList' version='2'>
+<b:section id='navigation' maxwidgets='1' showaddelement='yes'>
+<b:widget id='LinkList1' locked='false' title='Navigation' type='LinkList' version='2'>
 <b:includable id='main'>
 <ul class='nav-list'>
 <li><a expr:href='data:blog.homepageUrl'>প্রচ্ছদ</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/জাতীয়&quot;'>জাতীয়</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রাজনীতি&quot;'>রাজনীতি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আলোচিত&quot;'>আলোচিত</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সারাদেশ&quot;'>সারাদেশ</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আন্তর্জাতিক&quot;'>আন্তর্জাতিক</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/খেলা&quot;'>খেলা</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/বিনোদন&quot;'>বিনোদন</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/প্রযুক্তি&quot;'>প্রযুক্তি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/অর্থনীতি&quot;'>অর্থনীতি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সাহিত্য&quot;'>সাহিত্য</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রকমারি&quot;'>রকমারি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/স্বাস্থ্য&quot;'>স্বাস্থ্য</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/মতামত&quot;'>মতামত</a></li>
+<b:if cond='data:links'>
+<b:loop values='data:links' var='link'>
+<li><a expr:href='data:link.target'><data:link.name/></a></li>
+</b:loop>
+<b:else/>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/জাতীয়&quot;'>জাতীয়</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/রাজনীতি&quot;'>রাজনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/আলোচিত&quot;'>আলোচিত</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/সারাদেশ&quot;'>সারাদেশ</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/আন্তর্জাতিক&quot;'>আন্তর্জাতিক</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/খেলা&quot;'>খেলা</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/বিনোদন&quot;'>বিনোদন</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/প্রযুক্তি&quot;'>প্রযুক্তি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/অর্থনীতি&quot;'>অর্থনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/সাহিত্য&quot;'>সাহিত্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/রকমারি&quot;'>রকমারি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/স্বাস্থ্য&quot;'>স্বাস্থ্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/মতামত&quot;'>মতামত</a></li>
+</b:if>
 </ul>
 </b:includable>
 </b:widget>
@@ -806,6 +815,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 </div>
 </a>
 </b:loop>
+</div>
+</b:includable>
+</b:widget>
+
+<b:widget id='Label2' locked='false' title='লেবেলসমূহ' type='Label' version='2'>
+<b:includable id='main'>
+<div class='widget'>
+<div class='widget-title'><span class='dot'/> <data:title/></div>
+<div class='label-widget-list'>
+<b:loop values='data:labels' var='label'>
+<a class='label-pill' expr:href='data:label.url'><data:label.name/></a>
+</b:loop>
+</div>
 </div>
 </b:includable>
 </b:widget>
