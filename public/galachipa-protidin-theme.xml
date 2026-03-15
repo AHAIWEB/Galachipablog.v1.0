@@ -658,42 +658,51 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <script>
 //<![CDATA[
 (function(){
-  var grid = document.getElementById('top-news-home');
-  if (!grid) return;
-  var items = Array.prototype.slice.call(grid.querySelectorAll('.top-news-item'));
-  if (items.length === 0) return;
+  function buildTopNewsLayout() {
+    var grid = document.getElementById('top-news-home');
+    if (!grid) return;
 
-  // Clear grid
-  grid.innerHTML = '';
+    var items = Array.prototype.slice.call(grid.querySelectorAll('.top-news-item'));
+    if (items.length === 0) return;
 
-  // First item = main hero (left 7fr column)
-  var mainDiv = document.createElement('div');
-  mainDiv.className = 'top-news-main news-entrance';
-  var m = items[0];
-  m.style.display = '';
-  // Make hero title h2 instead of h3
-  var mH3 = m.querySelector('h3');
-  if (mH3) {
-    var mH2 = document.createElement('h2');
-    mH2.innerHTML = mH3.innerHTML;
-    mH3.parentNode.replaceChild(mH2, mH3);
+    grid.innerHTML = '';
+
+    // First item = main hero
+    var mainDiv = document.createElement('div');
+    mainDiv.className = 'top-news-main news-entrance';
+    var mainItem = items[0];
+    mainItem.style.display = '';
+
+    var mainH3 = mainItem.querySelector('h3');
+    if (mainH3) {
+      var mainH2 = document.createElement('h2');
+      mainH2.innerHTML = mainH3.innerHTML;
+      mainH3.parentNode.replaceChild(mainH2, mainH3);
+    }
+
+    mainDiv.innerHTML = mainItem.innerHTML;
+    grid.appendChild(mainDiv);
+
+    // Side cards
+    var side = document.createElement('div');
+    side.className = 'top-news-side';
+
+    for (var i = 1; i < Math.min(items.length, 5); i++) {
+      var card = document.createElement('div');
+      card.className = 'top-news-side-card news-entrance';
+      items[i].style.display = '';
+      card.innerHTML = items[i].innerHTML;
+      side.appendChild(card);
+    }
+
+    grid.appendChild(side);
   }
-  mainDiv.innerHTML = m.innerHTML;
-  grid.appendChild(mainDiv);
 
-  // Side container (right 5fr column, 2x2 grid)
-  var side = document.createElement('div');
-  side.className = 'top-news-side';
-
-  for (var i = 1; i < Math.min(items.length, 5); i++) {
-    var card = document.createElement('div');
-    card.className = 'top-news-side-card news-entrance';
-    items[i].style.display = '';
-    card.innerHTML = items[i].innerHTML;
-    side.appendChild(card);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildTopNewsLayout);
+  } else {
+    buildTopNewsLayout();
   }
-
-  grid.appendChild(side);
 })();
 //]]>
 </script>
