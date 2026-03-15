@@ -244,9 +244,23 @@ const AdminPage = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button size="sm" onClick={openCreate} className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <Plus size={14} className="mr-1" /> নতুন পোস্ট
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" onClick={async () => {
+              try {
+                const text = await navigator.clipboard.readText();
+                if (!text.trim()) { toast({ title: "ক্লিপবোর্ড খালি", variant: "destructive" }); return; }
+                setEditingPost(null);
+                setForm({ title: text.split("\n")[0]?.slice(0, 200) || "", content: `<p>${text}</p>`, excerpt: text.slice(0, 150), label: labels[0].id, image_url: "", source_url: "", source_name: "" });
+                setDialogOpen(true);
+                toast({ title: "ক্লিপবোর্ড থেকে পেস্ট হয়েছে ✅" });
+              } catch { toast({ title: "ক্লিপবোর্ড অ্যাক্সেস ব্যর্থ", variant: "destructive" }); }
+            }}>
+              <ClipboardPaste size={14} className="mr-1" /> পেস্ট
+            </Button>
+            <Button size="sm" onClick={openCreate} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Plus size={14} className="mr-1" /> নতুন পোস্ট
+            </Button>
+          </div>
         </div>
 
         {/* Posts table */}
