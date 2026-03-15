@@ -634,33 +634,43 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 </div>
 </div>
 
-<!-- JS: Convert flat list to hero layout -->
+<!-- JS: Convert flat list to hero layout (7:5 grid with main + side cards) -->
 <script>
 //<![CDATA[
 (function(){
   var grid = document.getElementById('top-news-home');
   if (!grid) return;
-  var items = grid.querySelectorAll('.top-news-item');
+  var items = Array.prototype.slice.call(grid.querySelectorAll('.top-news-item'));
   if (items.length === 0) return;
 
-  // First item = main hero
-  var main = items[0];
-  main.className = 'top-news-main news-entrance';
-  main.style.display = '';
+  // Clear grid
+  grid.innerHTML = '';
 
-  // Side container
+  // First item = main hero (left 7fr column)
+  var mainDiv = document.createElement('div');
+  mainDiv.className = 'top-news-main news-entrance';
+  var m = items[0];
+  m.style.display = '';
+  // Make hero title h2 instead of h3
+  var mH3 = m.querySelector('h3');
+  if (mH3) {
+    var mH2 = document.createElement('h2');
+    mH2.innerHTML = mH3.innerHTML;
+    mH3.parentNode.replaceChild(mH2, mH3);
+  }
+  mainDiv.innerHTML = m.innerHTML;
+  grid.appendChild(mainDiv);
+
+  // Side container (right 5fr column, 2x2 grid)
   var side = document.createElement('div');
   side.className = 'top-news-side';
 
   for (var i = 1; i < Math.min(items.length, 5); i++) {
-    items[i].className = 'top-news-side-card news-entrance';
+    var card = document.createElement('div');
+    card.className = 'top-news-side-card news-entrance';
     items[i].style.display = '';
-    side.appendChild(items[i]);
-  }
-
-  // Remove remaining items
-  for (var j = 5; j < items.length; j++) {
-    items[j].remove();
+    card.innerHTML = items[i].innerHTML;
+    side.appendChild(card);
   }
 
   grid.appendChild(side);
