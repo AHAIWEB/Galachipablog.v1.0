@@ -534,7 +534,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <b:section id='navigation' maxwidgets='1' showaddelement='yes'>
 <b:widget id='LinkList1' locked='false' title='Navigation' type='LinkList' version='2'>
 <b:includable id='main'>
-<ul class='nav-list'>
+<ul class='nav-list' id='main-nav-list'>
 <li><a expr:href='data:blog.homepageUrl'>প্রচ্ছদ</a></li>
 <b:loop values='data:links' var='link'>
 <li><a expr:href='data:link.target'><data:link.name/></a></li>
