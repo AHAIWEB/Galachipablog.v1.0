@@ -1154,7 +1154,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
   fetchLabel('খেলা', 5, function(posts) { tabData.sports = posts; checkTabsReady(); });
   // Latest - fetch from default feed
   (function() {
-    var url = BLOG_URL + '/feeds/posts/default?alt=json&max-results=8&callback=latestCb';
+    var url = BLOG_URL + '/feeds/posts/default?alt=json-in-script&max-results=8&callback=latestCb';
     var s = document.createElement('script');
     window.latestCb = function(data) {
       var posts = [];
