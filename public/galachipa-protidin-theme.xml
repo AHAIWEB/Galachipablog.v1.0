@@ -522,21 +522,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <b:section id='navigation' maxwidgets='1' showaddelement='no'>
 <b:widget id='LinkList1' locked='true' title='Navigation' type='LinkList' version='2'>
 <b:includable id='main'>
-<ul class='nav-list'>
+<ul class='nav-list' id='dynamic-nav'>
 <li><a expr:href='data:blog.homepageUrl'>প্রচ্ছদ</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/জাতীয়&quot;'>জাতীয়</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রাজনীতি&quot;'>রাজনীতি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আলোচিত&quot;'>আলোচিত</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সারাদেশ&quot;'>সারাদেশ</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আন্তর্জাতিক&quot;'>আন্তর্জাতিক</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/খেলা&quot;'>খেলা</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/বিনোদন&quot;'>বিনোদন</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/প্রযুক্তি&quot;'>প্রযুক্তি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/অর্থনীতি&quot;'>অর্থনীতি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সাহিত্য&quot;'>সাহিত্য</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রকমারি&quot;'>রকমারি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/স্বাস্থ্য&quot;'>স্বাস্থ্য</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;search/label/মতামত&quot;'>মতামত</a></li>
+<!-- Dynamic labels will be injected by JS -->
 </ul>
 </b:includable>
 </b:widget>
