@@ -452,10 +452,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 }
 
 @media (max-width: 768px) {
-  .top-news-grid, .national-grid { grid-template-columns: 1fr; }
+  .top-news-grid, .national-grid, .politics-grid { grid-template-columns: 1fr; }
   .top-news-side { grid-template-columns: 1fr 1fr; }
   .entertainment-grid { grid-template-columns: 1fr; }
   .tech-grid { grid-template-columns: 1fr; }
+  .trending-grid { grid-template-columns: 1fr; }
   .international-wrap { grid-template-columns: 1fr; }
   .opinion-grid { grid-template-columns: 1fr; }
   .literature-grid { grid-template-columns: 1fr; }
