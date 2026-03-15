@@ -842,15 +842,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <script>
 //<![CDATA[
 (function(){
-  var BLOG_URL = window.location.origin;
+  var BLOG_URL = (window.location.origin || (window.location.protocol + '//' + window.location.host)).replace(/\/$/, '');
 
-  // Helper: fetch posts by label via Blogger JSON feed
+  var LABEL_ALIASES = {
+    'জাতীয়': ['জাতীয়', 'সারাদেশ', 'দেশ'],
+    'আন্তর্জাতিক': ['আন্তর্জাতিক', 'বিশ্ব'],
+    'এডিটর পিক': ['এডিটর পিক', 'সম্পাদকীয়', 'সম্পাদকীয়', 'Editor Pick'],
+    'আলোচিত': ['আলোচিত', 'ট্রেন্ডিং', 'Trending'],
+    'স্বাস্থ্য': ['স্বাস্থ্য', 'লাইফস্টাইল'],
+    'রকমারি': ['রকমারি', 'ফিচার'],
+    'মতামত': ['মতামত', 'Opinion']
+  };
+
+  // Helper: fetch posts by label via Blogger JSON feed (with alias + timeout fallback)
   function fetchLabel(label, count, callback) {
-    var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json&max-results=' + count;
-    var s = document.createElement('script');
-    var cbName = 'cb_' + label.replace(/[^a-zA-Z\u0980-\u09FF]/g, '') + '_' + Date.now();
-    url += '&callback=' + cbName;
-    window[cbName] = function(data) {
+    var candidates = LABEL_ALIASES[label] || [label];
+    var idx = 0;
+
+    function parsePosts(data) {
       var posts = [];
       if (data.feed && data.feed.entry) {
         data.feed.entry.forEach(function(e) {
@@ -871,12 +880,52 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
           });
         });
       }
-      callback(posts);
-      delete window[cbName];
-      s.remove();
-    };
-    document.body.appendChild(s);
-    s.src = url;
+      return posts;
+    }
+
+    function tryNext() {
+      if (idx >= candidates.length) {
+        callback([]);
+        return;
+      }
+
+      var currentLabel = candidates[idx++];
+      var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(currentLabel) + '?alt=json&max-results=' + count;
+      var s = document.createElement('script');
+      var cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+      var done = false;
+
+      function cleanup() {
+        if (done) return;
+        done = true;
+        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+        if (s.parentNode) s.parentNode.removeChild(s);
+      }
+
+      var timer = setTimeout(function() {
+        cleanup();
+        tryNext();
+      }, 8000);
+
+      window[cbName] = function(data) {
+        clearTimeout(timer);
+        var posts = parsePosts(data || {});
+        cleanup();
+        if (posts.length) callback(posts);
+        else tryNext();
+      };
+
+      s.onerror = function() {
+        clearTimeout(timer);
+        cleanup();
+        tryNext();
+      };
+
+      s.src = url + '&callback=' + cbName;
+      document.body.appendChild(s);
+    }
+
+    tryNext();
   }
 
   // Helper: get visible label (skip শীর্ষ সংবাদ)
