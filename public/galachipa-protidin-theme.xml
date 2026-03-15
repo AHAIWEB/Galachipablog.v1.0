@@ -452,10 +452,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 }
 
 @media (max-width: 768px) {
-  .top-news-grid, .national-grid { grid-template-columns: 1fr; }
+  .top-news-grid, .national-grid, .politics-grid { grid-template-columns: 1fr; }
   .top-news-side { grid-template-columns: 1fr 1fr; }
   .entertainment-grid { grid-template-columns: 1fr; }
   .tech-grid { grid-template-columns: 1fr; }
+  .trending-grid { grid-template-columns: 1fr; }
   .international-wrap { grid-template-columns: 1fr; }
   .opinion-grid { grid-template-columns: 1fr; }
   .literature-grid { grid-template-columns: 1fr; }
@@ -535,26 +536,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <b:includable id='main'>
 <ul class='nav-list'>
 <li><a expr:href='data:blog.homepageUrl'>প্রচ্ছদ</a></li>
-<b:if cond='data:links'>
 <b:loop values='data:links' var='link'>
 <li><a expr:href='data:link.target'><data:link.name/></a></li>
 </b:loop>
-<b:else/>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/জাতীয়&quot;'>জাতীয়</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/রাজনীতি&quot;'>রাজনীতি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/আলোচিত&quot;'>আলোচিত</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/সারাদেশ&quot;'>সারাদেশ</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/আন্তর্জাতিক&quot;'>আন্তর্জাতিক</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/খেলা&quot;'>খেলা</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/বিনোদন&quot;'>বিনোদন</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/প্রযুক্তি&quot;'>প্রযুক্তি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/অর্থনীতি&quot;'>অর্থনীতি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/সাহিত্য&quot;'>সাহিত্য</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/রকমারি&quot;'>রকমারি</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/স্বাস্থ্য&quot;'>স্বাস্থ্য</a></li>
-<li><a expr:href='data:blog.homepageUrl + &quot;/search/label/মতামত&quot;'>মতামত</a></li>
-</b:if>
 </ul>
+<!-- Fallback: if no links configured, show default menu via JS -->
+<script>
+//<![CDATA[
+(function(){
+  var ul = document.querySelector('.nav-list');
+  if (ul && ul.children.length <= 1) {
+    var defaultLabels = ['জাতীয়','রাজনীতি','আলোচিত','সারাদেশ','আন্তর্জাতিক','খেলা','বিনোদন','প্রযুক্তি','অর্থনীতি','সাহিত্য','রকমারি','স্বাস্থ্য','মতামত'];
+    var base = window.location.origin || (window.location.protocol + '//' + window.location.host);
+    defaultLabels.forEach(function(l){
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = base + '/search/label/' + encodeURIComponent(l);
+      a.textContent = l;
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+  }
+})();
+//]]>
+</script>
 </b:includable>
 </b:widget>
 </b:section>
@@ -597,25 +602,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <!-- ═══════════════════════════════════════ -->
 <b:if cond='data:view.isHomepage'>
 
-<!-- শীর্ষ সংবাদ (Top News) - shows actual label, hides শীর্ষ সংবাদ tag -->
+<!-- শীর্ষ সংবাদ (Top News) - Hero Layout -->
 <div class='top-news'>
 <div class='section-header'>
 <div class='left'><span class='dot'/><h2>শীর্ষ সংবাদ</h2></div>
 </div>
-<div class='posts-grid'>
+<div class='top-news-grid' id='top-news-home'>
 <b:loop values='data:posts' var='post'>
-<article class='post-card news-entrance'>
+<article class='top-news-item news-entrance' style='display:none'>
 <a expr:href='data:post.url'>
 <b:if cond='data:post.featuredImage'>
 <div class='thumb' style='position:relative'>
 <img expr:alt='data:post.title' expr:src='data:post.featuredImage' loading='lazy'/>
-<!-- Show actual post label, NOT শীর্ষ সংবাদ -->
 <b:if cond='data:post.labels'>
 <b:loop values='data:post.labels' var='label'>
-<b:if cond='data:label.name != &quot;শীর্ষ সংবাদ&quot;'>
 <b:if cond='data:label.isFirst'>
 <span class='label-badge-bottom'><data:label.name/></span>
-</b:if>
 </b:if>
 </b:loop>
 </b:if>
@@ -631,6 +633,40 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 </b:loop>
 </div>
 </div>
+
+<!-- JS: Convert flat list to hero layout -->
+<script>
+//<![CDATA[
+(function(){
+  var grid = document.getElementById('top-news-home');
+  if (!grid) return;
+  var items = grid.querySelectorAll('.top-news-item');
+  if (items.length === 0) return;
+
+  // First item = main hero
+  var main = items[0];
+  main.className = 'top-news-main news-entrance';
+  main.style.display = '';
+
+  // Side container
+  var side = document.createElement('div');
+  side.className = 'top-news-side';
+
+  for (var i = 1; i < Math.min(items.length, 5); i++) {
+    items[i].className = 'top-news-side-card news-entrance';
+    items[i].style.display = '';
+    side.appendChild(items[i]);
+  }
+
+  // Remove remaining items
+  for (var j = 5; j < items.length; j++) {
+    items[j].remove();
+  }
+
+  grid.appendChild(side);
+})();
+//]]>
+</script>
 
 </b:if>
 
@@ -751,47 +787,66 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <div class='main-layout'>
 <div class='content-area'>
 
-<!-- রাজনীতি (Parliament/Debate) -->
-<div class='politics-section' id='sec-politics'></div>
+<!-- Label sections (JS-powered, dashboard-configurable via HTML widgets) -->
+<b:section id='label-sections' showaddelement='yes'>
 
-<!-- সারাদেশ (Grid) -->
-<div class='national-section' id='sec-saradeesh'></div>
+<b:widget id='HTML_politics' locked='false' title='রাজনীতি' type='HTML' version='2'>
+<b:includable id='main'><div class='politics-section' id='sec-politics'></div></b:includable>
+</b:widget>
 
-<!-- আলোচিত (Trending/Viral) -->
-<div class='trending-section' id='sec-trending'></div>
+<b:widget id='HTML_saradeesh' locked='false' title='সারাদেশ' type='HTML' version='2'>
+<b:includable id='main'><div class='national-section' id='sec-saradeesh'></div></b:includable>
+</b:widget>
 
-<!-- জাতীয় (Timeline) -->
-<div class='national-section' id='sec-national'></div>
+<b:widget id='HTML_trending' locked='false' title='আলোচিত' type='HTML' version='2'>
+<b:includable id='main'><div class='trending-section' id='sec-trending'></div></b:includable>
+</b:widget>
 
-<!-- এডিটর পিক (Carousel) -->
-<div class='editor-pick' id='sec-editor-pick'></div>
+<b:widget id='HTML_national' locked='false' title='জাতীয়' type='HTML' version='2'>
+<b:includable id='main'><div class='national-section' id='sec-national'></div></b:includable>
+</b:widget>
 
-<!-- বিনোদন (Cinema Reel) -->
-<div class='entertainment-section' id='sec-entertainment'></div>
+<b:widget id='HTML_editorpick' locked='false' title='এডিটর পিক' type='HTML' version='2'>
+<b:includable id='main'><div class='editor-pick' id='sec-editor-pick'></div></b:includable>
+</b:widget>
 
-<!-- খেলা (Horizontal Cards) -->
-<div class='sports-section' id='sec-sports'></div>
+<b:widget id='HTML_entertainment' locked='false' title='বিনোদন' type='HTML' version='2'>
+<b:includable id='main'><div class='entertainment-section' id='sec-entertainment'></div></b:includable>
+</b:widget>
 
-<!-- প্রযুক্তি (Masonry) -->
-<div class='tech-section' id='sec-tech'></div>
+<b:widget id='HTML_sports' locked='false' title='খেলা' type='HTML' version='2'>
+<b:includable id='main'><div class='sports-section' id='sec-sports'></div></b:includable>
+</b:widget>
 
-<!-- সাহিত্য (Magazine) -->
-<div class='literature-section' id='sec-literature'></div>
+<b:widget id='HTML_tech' locked='false' title='প্রযুক্তি' type='HTML' version='2'>
+<b:includable id='main'><div class='tech-section' id='sec-tech'></div></b:includable>
+</b:widget>
 
-<!-- রকমারি (Zigzag) -->
-<div class='rokomari-section' id='sec-rokomari'></div>
+<b:widget id='HTML_literature' locked='false' title='সাহিত্য' type='HTML' version='2'>
+<b:includable id='main'><div class='literature-section' id='sec-literature'></div></b:includable>
+</b:widget>
 
-<!-- স্বাস্থ্য (Health Cards) -->
-<div class='health-section' id='sec-health'></div>
+<b:widget id='HTML_rokomari' locked='false' title='রকমারি' type='HTML' version='2'>
+<b:includable id='main'><div class='rokomari-section' id='sec-rokomari'></div></b:includable>
+</b:widget>
 
-<!-- আন্তর্জাতিক (Dark Globe) -->
-<div class='international-section' id='sec-international'></div>
+<b:widget id='HTML_health' locked='false' title='স্বাস্থ্য' type='HTML' version='2'>
+<b:includable id='main'><div class='health-section' id='sec-health'></div></b:includable>
+</b:widget>
 
-<!-- অর্থনীতি (Grid) -->
-<div class='national-section' id='sec-economy'></div>
+<b:widget id='HTML_international' locked='false' title='আন্তর্জাতিক' type='HTML' version='2'>
+<b:includable id='main'><div class='international-section' id='sec-international'></div></b:includable>
+</b:widget>
 
-<!-- মতামত (Opinion / Quotes) -->
-<div class='opinion-section' id='sec-opinion'></div>
+<b:widget id='HTML_economy' locked='false' title='অর্থনীতি' type='HTML' version='2'>
+<b:includable id='main'><div class='national-section' id='sec-economy'></div></b:includable>
+</b:widget>
+
+<b:widget id='HTML_opinion' locked='false' title='মতামত' type='HTML' version='2'>
+<b:includable id='main'><div class='opinion-section' id='sec-opinion'></div></b:includable>
+</b:widget>
+
+</b:section>
 
 </div>
 

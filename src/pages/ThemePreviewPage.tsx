@@ -56,28 +56,29 @@ const SmallCard = ({ post, hideLabel }: { post: typeof mockPosts[0]; hideLabel?:
   </div>
 );
 
-/* ── শীর্ষ সংবাদ - Top News (shows actual label, hides "শীর্ষ সংবাদ" tag) ── */
+/* ── শীর্ষ সংবাদ - Top News (Hero Layout with main + side) ── */
 const TopNewsSection = ({ posts }: { posts: typeof mockPosts }) => (
   <section style={{ padding: "20px 0" }}>
     <SectionHeader title="শীর্ষ সংবাদ" accent="#e11d48" showMore={false} />
     <div style={{ display: "grid", gridTemplateColumns: "7fr 5fr", gap: 20 }}>
+      {/* Main hero */}
       <div>
         <div style={{ overflow: "hidden", borderRadius: 8, position: "relative" }}>
           <img src={posts[0].image} alt="" style={{ width: "100%", aspectRatio: "16/10", objectFit: "cover" }} />
-          {/* Show actual post label, not শীর্ষ সংবাদ */}
           <span style={{ position: "absolute", top: 12, left: 12, background: "#e11d48", color: "#fff", padding: "4px 12px", borderRadius: 4, fontSize: 11, fontWeight: 700 }}>{posts[0].label}</span>
         </div>
         <div style={{ marginTop: 12 }}>
           <h2 style={{ fontSize: "1.5rem", fontWeight: 700, lineHeight: 1.2 }}>{posts[0].title}</h2>
           <p style={{ fontSize: 14, color: "#71717a", marginTop: 8 }}>{posts[0].excerpt}</p>
+          <div style={{ fontSize: 12, color: "#71717a", marginTop: 6 }}>{posts[0].author} · {posts[0].date}</div>
         </div>
       </div>
+      {/* Side stories - 2x2 grid */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {posts.slice(1, 5).map((post, i) => (
           <div key={i}>
             <div style={{ overflow: "hidden", borderRadius: 6, position: "relative" }}>
               <img src={post.image} alt="" style={{ width: "100%", aspectRatio: "16/10", objectFit: "cover" }} />
-              {/* Show actual label badge */}
               <span style={{ position: "absolute", bottom: 6, left: 6, background: "rgba(0,0,0,0.7)", color: "#fff", padding: "2px 8px", borderRadius: 3, fontSize: 10, fontWeight: 600 }}>{post.label}</span>
             </div>
             <h3 style={{ fontSize: 14, fontWeight: 700, marginTop: 6, lineHeight: 1.35 }}>{post.title}</h3>
