@@ -601,25 +601,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <!-- ═══════════════════════════════════════ -->
 <b:if cond='data:view.isHomepage'>
 
-<!-- শীর্ষ সংবাদ (Top News) - shows actual label, hides শীর্ষ সংবাদ tag -->
+<!-- শীর্ষ সংবাদ (Top News) - Hero Layout -->
 <div class='top-news'>
 <div class='section-header'>
 <div class='left'><span class='dot'/><h2>শীর্ষ সংবাদ</h2></div>
 </div>
-<div class='posts-grid'>
+<div class='top-news-grid' id='top-news-home'>
 <b:loop values='data:posts' var='post'>
-<article class='post-card news-entrance'>
+<article class='top-news-item news-entrance' style='display:none'>
 <a expr:href='data:post.url'>
 <b:if cond='data:post.featuredImage'>
 <div class='thumb' style='position:relative'>
 <img expr:alt='data:post.title' expr:src='data:post.featuredImage' loading='lazy'/>
-<!-- Show actual post label, NOT শীর্ষ সংবাদ -->
 <b:if cond='data:post.labels'>
 <b:loop values='data:post.labels' var='label'>
-<b:if cond='data:label.name != &quot;শীর্ষ সংবাদ&quot;'>
 <b:if cond='data:label.isFirst'>
 <span class='label-badge-bottom'><data:label.name/></span>
-</b:if>
 </b:if>
 </b:loop>
 </b:if>
@@ -635,6 +632,40 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 </b:loop>
 </div>
 </div>
+
+<!-- JS: Convert flat list to hero layout -->
+<script>
+//<![CDATA[
+(function(){
+  var grid = document.getElementById('top-news-home');
+  if (!grid) return;
+  var items = grid.querySelectorAll('.top-news-item');
+  if (items.length === 0) return;
+
+  // First item = main hero
+  var main = items[0];
+  main.className = 'top-news-main news-entrance';
+  main.style.display = '';
+
+  // Side container
+  var side = document.createElement('div');
+  side.className = 'top-news-side';
+
+  for (var i = 1; i < Math.min(items.length, 5); i++) {
+    items[i].className = 'top-news-side-card news-entrance';
+    items[i].style.display = '';
+    side.appendChild(items[i]);
+  }
+
+  // Remove remaining items
+  for (var j = 5; j < items.length; j++) {
+    items[j].remove();
+  }
+
+  grid.appendChild(side);
+})();
+//]]>
+</script>
 
 </b:if>
 
