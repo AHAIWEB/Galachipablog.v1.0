@@ -343,7 +343,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .carousel-inner { display: flex; gap: 16px; transition: transform 0.3s ease; }
 .carousel-card { flex: 0 0 calc(25% - 12px); }
 .carousel-card .thumb { overflow: hidden; border-radius: 6px; }
-.carousel-card .thumb img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+.carousel-card .thumb img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
 .carousel-card .label-badge { margin-top: 8px; }
 .carousel-card h3 { font-size: 14px; margin-top: 4px; line-height: 1.35; }
 .carousel-card .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
@@ -352,6 +352,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .sidebar .widget { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; box-shadow: var(--shadow-card); }
 .sidebar .widget-title { font-size: 15px; font-weight: 700; padding: 12px 16px 8px; border-bottom: 2px solid var(--primary); margin-bottom: 0; display: flex; align-items: center; gap: 6px; }
 .sidebar .widget-title .dot { width: 10px; height: 10px; background: var(--primary); border-radius: 2px; }
+.label-widget-list { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px 16px; }
+.label-widget-list .label-pill { display: inline-block; background: var(--primary-light); color: var(--primary); padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.label-widget-list .label-pill:hover { background: var(--primary); color: #fff; }
 
 /* 3-Tab Widget */
 .tab-widget { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
