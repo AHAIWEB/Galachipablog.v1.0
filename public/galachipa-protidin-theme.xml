@@ -80,7 +80,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .site-tagline { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
 /* === Navigation === */
-.main-nav { background: var(--card); border-bottom: 1px solid var(--border); }
+.main-nav { background: var(--card); border-bottom: 1px solid var(--border); position: relative; }
 .main-nav .container { display: flex; align-items: center; justify-content: space-between; }
 .nav-list { display: flex; list-style: none; flex-wrap: wrap; }
 .nav-list li a { display: block; padding: 10px 14px; font-size: 14px; font-weight: 500; color: rgba(10,10,11,0.8); transition: color 0.2s; white-space: nowrap; }
@@ -88,6 +88,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 .nav-list li:first-child a { font-weight: 600; color: var(--foreground); }
 .nav-search { padding: 8px; color: var(--muted); cursor: pointer; background: none; border: none; font-size: 18px; }
 .mobile-menu-btn { display: none; padding: 8px; background: none; border: none; font-size: 20px; color: var(--foreground); cursor: pointer; }
+
+/* === Search Widget === */
+.search-widget { display: none; background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 0; }
+.search-widget.active { display: block; }
+.search-widget .container { display: flex; gap: 8px; }
+.search-widget input { flex: 1; padding: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; font-family: inherit; outline: none; }
+.search-widget input:focus { border-color: var(--primary); }
+.search-widget button { background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: var(--radius); font-size: 14px; font-family: inherit; font-weight: 600; cursor: pointer; }
 
 /* === Breaking News Ticker === */
 .breaking-ticker { background: var(--card); border-bottom: 1px solid var(--border); overflow: hidden; }
@@ -547,6 +555,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 </div>
 </nav>
 
+<!-- Search Widget -->
+<div class='search-widget' id='search-widget'>
+<div class='container'>
+<form expr:action='data:blog.searchUrl' method='get' style='display:flex;gap:8px;width:100%'>
+<input name='q' placeholder='খবর খুঁজুন...' type='text'/>
+<button type='submit'>খুঁজুন</button>
+</form>
+</div>
+</div>
+
 <!-- Breaking Ticker -->
 <div class='breaking-ticker'>
 <div class='container'>
@@ -727,6 +745,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <!-- রাজনীতি (Parliament/Debate) -->
 <div class='politics-section' id='sec-politics'></div>
 
+<!-- সারাদেশ (Grid) -->
+<div class='national-section' id='sec-saradeesh'></div>
+
 <!-- আলোচিত (Trending/Viral) -->
 <div class='trending-section' id='sec-trending'></div>
 
@@ -756,6 +777,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 
 <!-- আন্তর্জাতিক (Dark Globe) -->
 <div class='international-section' id='sec-international'></div>
+
+<!-- অর্থনীতি (Grid) -->
+<div class='national-section' id='sec-economy'></div>
 
 <!-- মতামত (Opinion / Quotes) -->
 <div class='opinion-section' id='sec-opinion'></div>
@@ -1192,7 +1216,48 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
     el.innerHTML = html;
   });
 
-  // === 3-Tab Sidebar Widget ===
+  // === সারাদেশ (Grid - uses national style) ===
+  fetchLabel('সারাদেশ', 5, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-saradeesh');
+    var html = '<div class="section-header blue"><div class="left"><span class="dot"></span><h2>সারাদেশ</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/সারাদেশ">আরো ❯</a></div>';
+    html += '<div class="national-grid">';
+    html += '<div class="national-featured"><a href="' + posts[0].url + '">';
+    if (posts[0].image) html += '<img src="' + posts[0].image + '" alt=""/>';
+    html += '<div class="info"><span class="label-badge" style="background:#1d4ed8;color:#fff;border-radius:4px;padding:3px 10px">' + getVisibleLabel(posts[0].labels) + '</span>';
+    html += '<h3>' + posts[0].title + '</h3><p>' + posts[0].excerpt + '</p></div></a></div>';
+    html += '<div class="timeline-list">';
+    for (var i = 1; i < posts.length; i++) {
+      html += '<a href="' + posts[i].url + '" class="timeline-item">';
+      html += '<div class="timeline-dot-wrap"><div class="timeline-dot"></div>';
+      if (i < posts.length - 1) html += '<div class="timeline-line"></div>';
+      html += '</div><div><h4>' + posts[i].title + '</h4><span class="date">' + posts[i].date + '</span></div></a>';
+    }
+    html += '</div></div>';
+    el.innerHTML = html;
+  });
+
+  // === অর্থনীতি (Grid - uses national style) ===
+  fetchLabel('অর্থনীতি', 5, function(posts) {
+    if (!posts.length) return;
+    var el = document.getElementById('sec-economy');
+    var html = '<div class="section-header amber"><div class="left"><span class="dot"></span><h2>অর্থনীতি</h2></div><a class="more-link" href="' + BLOG_URL + '/search/label/অর্থনীতি">আরো ❯</a></div>';
+    html += '<div class="national-grid">';
+    html += '<div class="national-featured"><a href="' + posts[0].url + '">';
+    if (posts[0].image) html += '<img src="' + posts[0].image + '" alt=""/>';
+    html += '<div class="info"><span class="label-badge" style="background:var(--amber);color:#fff;border-radius:4px;padding:3px 10px">' + getVisibleLabel(posts[0].labels) + '</span>';
+    html += '<h3>' + posts[0].title + '</h3><p>' + posts[0].excerpt + '</p></div></a></div>';
+    html += '<div class="timeline-list">';
+    for (var i = 1; i < posts.length; i++) {
+      html += '<a href="' + posts[i].url + '" class="timeline-item">';
+      html += '<div class="timeline-dot-wrap"><div class="timeline-dot" style="background:var(--amber);border-color:#fef3c7"></div>';
+      if (i < posts.length - 1) html += '<div class="timeline-line" style="background:#fef3c7"></div>';
+      html += '</div><div><h4>' + posts[i].title + '</h4><span class="date">' + posts[i].date + '</span></div></a>';
+    }
+    html += '</div></div>';
+    el.innerHTML = html;
+  });
+
   var tabData = { popular: [], sports: [], latest: [] };
   var tabLoaded = 0;
   function checkTabsReady() {
