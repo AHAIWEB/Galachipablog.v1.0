@@ -522,9 +522,21 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <b:section id='navigation' maxwidgets='1' showaddelement='no'>
 <b:widget id='LinkList1' locked='true' title='Navigation' type='LinkList' version='2'>
 <b:includable id='main'>
-<ul class='nav-list' id='dynamic-nav'>
+<ul class='nav-list'>
 <li><a expr:href='data:blog.homepageUrl'>প্রচ্ছদ</a></li>
-<!-- Dynamic labels will be injected by JS -->
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/জাতীয়&quot;'>জাতীয়</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রাজনীতি&quot;'>রাজনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আলোচিত&quot;'>আলোচিত</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সারাদেশ&quot;'>সারাদেশ</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/আন্তর্জাতিক&quot;'>আন্তর্জাতিক</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/খেলা&quot;'>খেলা</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/বিনোদন&quot;'>বিনোদন</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/প্রযুক্তি&quot;'>প্রযুক্তি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/অর্থনীতি&quot;'>অর্থনীতি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/সাহিত্য&quot;'>সাহিত্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/রকমারি&quot;'>রকমারি</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/স্বাস্থ্য&quot;'>স্বাস্থ্য</a></li>
+<li><a expr:href='data:blog.homepageUrl + &quot;search/label/মতামত&quot;'>মতামত</a></li>
 </ul>
 </b:includable>
 </b:widget>
@@ -773,24 +785,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 </div>
 </b:includable>
 </b:widget>
-
-<b:widget id='LabelSidebar1' locked='false' title='সব লেবেল' type='Label' version='2'>
-<b:includable id='main'>
-<div class='widget'>
-<div class='widget-title'><span class='dot'/> <data:title/></div>
-<ul>
-<b:loop values='data:labels' var='label'>
-<li style='border-bottom:1px solid var(--border);'>
-<a expr:href='data:label.url' style='display:flex;justify-content:space-between;align-items:center;padding:8px 0;'>
-<span><data:label.name/></span>
-<span style='font-size:11px;color:var(--muted);'>(<data:label.count/>)</span>
-</a>
-</li>
-</b:loop>
-</ul>
-</div>
-</b:includable>
-</b:widget>
 </b:section>
 
 <!-- 3-Tab Widget (populated by JS) -->
@@ -846,34 +840,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 (function(){
   var BLOG_URL = window.location.origin;
 
-  // === Dynamic Navigation Menu from Blog Labels ===
-  (function(){
-    var navUrl = BLOG_URL + '/feeds/posts/summary?alt=json-in-script&max-results=0&callback=navLabelsCb';
-    var ns = document.createElement('script');
-    window.navLabelsCb = function(data) {
-      var nav = document.getElementById('dynamic-nav');
-      if (!nav || !data.feed || !data.feed.category) return;
-      var cats = data.feed.category;
-      // Sort by term alphabetically (Bangla)
-      cats.sort(function(a, b) { return a.term.localeCompare(b.term, 'bn'); });
-      cats.forEach(function(c) {
-        var li = document.createElement('li');
-        var a = document.createElement('a');
-        a.href = BLOG_URL + '/search/label/' + encodeURIComponent(c.term);
-        a.textContent = c.term;
-        li.appendChild(a);
-        nav.appendChild(li);
-      });
-      delete window.navLabelsCb;
-      ns.remove();
-    };
-    document.body.appendChild(ns);
-    ns.src = navUrl;
-  })();
-
   // Helper: fetch posts by label via Blogger JSON feed
   function fetchLabel(label, count, callback) {
-    var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json-in-script&max-results=' + count;
+    var url = BLOG_URL + '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json&max-results=' + count;
     var s = document.createElement('script');
     var cbName = 'cb_' + label.replace(/[^a-zA-Z\u0980-\u09FF]/g, '') + '_' + Date.now();
     url += '&callback=' + cbName;
@@ -1185,7 +1154,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
   fetchLabel('খেলা', 5, function(posts) { tabData.sports = posts; checkTabsReady(); });
   // Latest - fetch from default feed
   (function() {
-    var url = BLOG_URL + '/feeds/posts/default?alt=json-in-script&max-results=8&callback=latestCb';
+    var url = BLOG_URL + '/feeds/posts/default?alt=json&max-results=8&callback=latestCb';
     var s = document.createElement('script');
     window.latestCb = function(data) {
       var posts = [];
