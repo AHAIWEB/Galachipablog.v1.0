@@ -787,47 +787,66 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <div class='main-layout'>
 <div class='content-area'>
 
-<!-- রাজনীতি (Parliament/Debate) -->
-<div class='politics-section' id='sec-politics'></div>
+<!-- Label sections (JS-powered, dashboard-configurable via HTML widgets) -->
+<b:section id='label-sections' showaddelement='yes'>
 
-<!-- সারাদেশ (Grid) -->
-<div class='national-section' id='sec-saradeesh'></div>
+<b:widget id='HTML_politics' locked='false' title='রাজনীতি' type='HTML' version='2'>
+<b:includable id='main'><div class='politics-section' id='sec-politics'></div></b:includable>
+</b:widget>
 
-<!-- আলোচিত (Trending/Viral) -->
-<div class='trending-section' id='sec-trending'></div>
+<b:widget id='HTML_saradeesh' locked='false' title='সারাদেশ' type='HTML' version='2'>
+<b:includable id='main'><div class='national-section' id='sec-saradeesh'></div></b:includable>
+</b:widget>
 
-<!-- জাতীয় (Timeline) -->
-<div class='national-section' id='sec-national'></div>
+<b:widget id='HTML_trending' locked='false' title='আলোচিত' type='HTML' version='2'>
+<b:includable id='main'><div class='trending-section' id='sec-trending'></div></b:includable>
+</b:widget>
 
-<!-- এডিটর পিক (Carousel) -->
-<div class='editor-pick' id='sec-editor-pick'></div>
+<b:widget id='HTML_national' locked='false' title='জাতীয়' type='HTML' version='2'>
+<b:includable id='main'><div class='national-section' id='sec-national'></div></b:includable>
+</b:widget>
 
-<!-- বিনোদন (Cinema Reel) -->
-<div class='entertainment-section' id='sec-entertainment'></div>
+<b:widget id='HTML_editorpick' locked='false' title='এডিটর পিক' type='HTML' version='2'>
+<b:includable id='main'><div class='editor-pick' id='sec-editor-pick'></div></b:includable>
+</b:widget>
 
-<!-- খেলা (Horizontal Cards) -->
-<div class='sports-section' id='sec-sports'></div>
+<b:widget id='HTML_entertainment' locked='false' title='বিনোদন' type='HTML' version='2'>
+<b:includable id='main'><div class='entertainment-section' id='sec-entertainment'></div></b:includable>
+</b:widget>
 
-<!-- প্রযুক্তি (Masonry) -->
-<div class='tech-section' id='sec-tech'></div>
+<b:widget id='HTML_sports' locked='false' title='খেলা' type='HTML' version='2'>
+<b:includable id='main'><div class='sports-section' id='sec-sports'></div></b:includable>
+</b:widget>
 
-<!-- সাহিত্য (Magazine) -->
-<div class='literature-section' id='sec-literature'></div>
+<b:widget id='HTML_tech' locked='false' title='প্রযুক্তি' type='HTML' version='2'>
+<b:includable id='main'><div class='tech-section' id='sec-tech'></div></b:includable>
+</b:widget>
 
-<!-- রকমারি (Zigzag) -->
-<div class='rokomari-section' id='sec-rokomari'></div>
+<b:widget id='HTML_literature' locked='false' title='সাহিত্য' type='HTML' version='2'>
+<b:includable id='main'><div class='literature-section' id='sec-literature'></div></b:includable>
+</b:widget>
 
-<!-- স্বাস্থ্য (Health Cards) -->
-<div class='health-section' id='sec-health'></div>
+<b:widget id='HTML_rokomari' locked='false' title='রকমারি' type='HTML' version='2'>
+<b:includable id='main'><div class='rokomari-section' id='sec-rokomari'></div></b:includable>
+</b:widget>
 
-<!-- আন্তর্জাতিক (Dark Globe) -->
-<div class='international-section' id='sec-international'></div>
+<b:widget id='HTML_health' locked='false' title='স্বাস্থ্য' type='HTML' version='2'>
+<b:includable id='main'><div class='health-section' id='sec-health'></div></b:includable>
+</b:widget>
 
-<!-- অর্থনীতি (Grid) -->
-<div class='national-section' id='sec-economy'></div>
+<b:widget id='HTML_international' locked='false' title='আন্তর্জাতিক' type='HTML' version='2'>
+<b:includable id='main'><div class='international-section' id='sec-international'></div></b:includable>
+</b:widget>
 
-<!-- মতামত (Opinion / Quotes) -->
-<div class='opinion-section' id='sec-opinion'></div>
+<b:widget id='HTML_economy' locked='false' title='অর্থনীতি' type='HTML' version='2'>
+<b:includable id='main'><div class='national-section' id='sec-economy'></div></b:includable>
+</b:widget>
+
+<b:widget id='HTML_opinion' locked='false' title='মতামত' type='HTML' version='2'>
+<b:includable id='main'><div class='opinion-section' id='sec-opinion'></div></b:includable>
+</b:widget>
+
+</b:section>
 
 </div>
 
