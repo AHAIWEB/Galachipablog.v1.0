@@ -790,59 +790,59 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <!-- Label sections (JS-powered, dashboard-configurable via HTML widgets) -->
 <b:section id='label-sections' showaddelement='yes'>
 
-<b:widget id='HTML1' locked='false' title='রাজনীতি' type='HTML' version='2'>
+<b:widget id='HTML101' locked='false' title='রাজনীতি' type='HTML' version='2'>
 <b:includable id='main'><div class='politics-section' id='sec-politics'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML2' locked='false' title='সারাদেশ' type='HTML' version='2'>
+<b:widget id='HTML102' locked='false' title='সারাদেশ' type='HTML' version='2'>
 <b:includable id='main'><div class='national-section' id='sec-saradeesh'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML3' locked='false' title='আলোচিত' type='HTML' version='2'>
+<b:widget id='HTML103' locked='false' title='আলোচিত' type='HTML' version='2'>
 <b:includable id='main'><div class='trending-section' id='sec-trending'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML4' locked='false' title='জাতীয়' type='HTML' version='2'>
+<b:widget id='HTML104' locked='false' title='জাতীয়' type='HTML' version='2'>
 <b:includable id='main'><div class='national-section' id='sec-national'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML5' locked='false' title='এডিটর পিক' type='HTML' version='2'>
+<b:widget id='HTML105' locked='false' title='এডিটর পিক' type='HTML' version='2'>
 <b:includable id='main'><div class='editor-pick' id='sec-editor-pick'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML6' locked='false' title='বিনোদন' type='HTML' version='2'>
+<b:widget id='HTML106' locked='false' title='বিনোদন' type='HTML' version='2'>
 <b:includable id='main'><div class='entertainment-section' id='sec-entertainment'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML7' locked='false' title='খেলা' type='HTML' version='2'>
+<b:widget id='HTML107' locked='false' title='খেলা' type='HTML' version='2'>
 <b:includable id='main'><div class='sports-section' id='sec-sports'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML8' locked='false' title='প্রযুক্তি' type='HTML' version='2'>
+<b:widget id='HTML108' locked='false' title='প্রযুক্তি' type='HTML' version='2'>
 <b:includable id='main'><div class='tech-section' id='sec-tech'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML9' locked='false' title='সাহিত্য' type='HTML' version='2'>
+<b:widget id='HTML109' locked='false' title='সাহিত্য' type='HTML' version='2'>
 <b:includable id='main'><div class='literature-section' id='sec-literature'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML10' locked='false' title='রকমারি' type='HTML' version='2'>
+<b:widget id='HTML110' locked='false' title='রকমারি' type='HTML' version='2'>
 <b:includable id='main'><div class='rokomari-section' id='sec-rokomari'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML11' locked='false' title='স্বাস্থ্য' type='HTML' version='2'>
+<b:widget id='HTML111' locked='false' title='স্বাস্থ্য' type='HTML' version='2'>
 <b:includable id='main'><div class='health-section' id='sec-health'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML12' locked='false' title='আন্তর্জাতিক' type='HTML' version='2'>
+<b:widget id='HTML112' locked='false' title='আন্তর্জাতিক' type='HTML' version='2'>
 <b:includable id='main'><div class='international-section' id='sec-international'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML13' locked='false' title='অর্থনীতি' type='HTML' version='2'>
+<b:widget id='HTML113' locked='false' title='অর্থনীতি' type='HTML' version='2'>
 <b:includable id='main'><div class='national-section' id='sec-economy'></div></b:includable>
 </b:widget>
 
-<b:widget id='HTML14' locked='false' title='মতামত' type='HTML' version='2'>
+<b:widget id='HTML114' locked='false' title='মতামত' type='HTML' version='2'>
 <b:includable id='main'><div class='opinion-section' id='sec-opinion'></div></b:includable>
 </b:widget>
 
