@@ -2,6 +2,25 @@ import { Link } from "react-router-dom";
 import { Download, FileCode, CheckCircle, ArrowLeft } from "lucide-react";
 
 const ThemeDownloadPage = () => {
+  const getDownloadUrl = () => {
+    const basePath = "/galachipa-protidin-theme.xml";
+    const params = new URLSearchParams(window.location.search);
+    const previewToken = params.get("__lovable_token");
+
+    if (!previewToken) return basePath;
+
+    return `${basePath}?__lovable_token=${encodeURIComponent(previewToken)}`;
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = getDownloadUrl();
+    link.download = "galachipa-protidin-theme.xml";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="max-w-lg w-full bg-card border border-border rounded-lg p-8 shadow-card">
@@ -36,14 +55,13 @@ const ThemeDownloadPage = () => {
           ))}
         </div>
 
-        <a
-          href="/galachipa-protidin-theme.xml"
-          download="galachipa-protidin-theme.xml"
+        <button
+          onClick={handleDownload}
           className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3 px-4 rounded-md font-bold hover:opacity-90 transition-opacity"
         >
           <Download size={18} />
           থিম ডাউনলোড করুন
-        </a>
+        </button>
 
         <div className="mt-6 p-4 bg-accent rounded-md">
           <h3 className="text-sm font-bold text-foreground mb-2">ইনস্টল পদ্ধতি:</h3>
