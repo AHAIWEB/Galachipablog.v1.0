@@ -778,6 +778,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; letter-spacing: -0.02em; line-height:
 <!-- আন্তর্জাতিক (Dark Globe) -->
 <div class='international-section' id='sec-international'></div>
 
+<!-- অর্থনীতি (Grid) -->
+<div class='national-section' id='sec-economy'></div>
+
 <!-- মতামত (Opinion / Quotes) -->
 <div class='opinion-section' id='sec-opinion'></div>
 
