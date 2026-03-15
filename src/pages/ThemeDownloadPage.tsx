@@ -2,13 +2,6 @@ import { Link } from "react-router-dom";
 import { Download, FileCode, CheckCircle, ArrowLeft } from "lucide-react";
 
 const ThemeDownloadPage = () => {
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = "/galachipa-protidin-theme.xml";
-    link.download = "galachipa-protidin-theme.xml";
-    link.click();
-  };
-
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="max-w-lg w-full bg-card border border-border rounded-lg p-8 shadow-card">
@@ -43,13 +36,14 @@ const ThemeDownloadPage = () => {
           ))}
         </div>
 
-        <button
-          onClick={handleDownload}
+        <a
+          href="/galachipa-protidin-theme.xml"
+          download="galachipa-protidin-theme.xml"
           className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-3 px-4 rounded-md font-bold hover:opacity-90 transition-opacity"
         >
           <Download size={18} />
           থিম ডাউনলোড করুন
-        </button>
+        </a>
 
         <div className="mt-6 p-4 bg-accent rounded-md">
           <h3 className="text-sm font-bold text-foreground mb-2">ইনস্টল পদ্ধতি:</h3>
