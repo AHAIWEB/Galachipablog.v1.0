@@ -1,9 +1,10 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Pencil, Trash2, Eye, Globe, Loader2, LogOut, ClipboardPaste } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Eye, Globe, Loader2, LogOut, ClipboardPaste, ArrowUp, ArrowDown, Users } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import LabelBadge from "@/components/LabelBadge";
 import RichEditor from "@/components/RichEditor";
+import ReporterManager from "@/components/admin/ReporterManager";
 import { labels } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -34,6 +36,7 @@ interface Post {
   source_name: string | null;
   label: string;
   status: string;
+  sort_order: number;
   created_at: string;
   updated_at: string;
 }
@@ -61,13 +64,13 @@ const AdminPage = () => {
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ["admin-posts", filterLabel],
     queryFn: async () => {
-      let query = supabase.from("posts").select("*").order("created_at", { ascending: false });
+      let query = supabase.from("posts").select("*").order("sort_order", { ascending: false }).order("created_at", { ascending: false });
       if (filterLabel !== "all") {
         query = query.eq("label", filterLabel);
       }
       const { data, error } = await query;
       if (error) throw error;
-      return data as Post[];
+      return (data || []) as Post[];
     },
   });
 
@@ -123,6 +126,31 @@ const AdminPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
       toast({ title: "পোস্ট পাবলিশ হয়েছে ✅" });
+    },
+  });
+
+  // Reorder mutation
+  const reorderMutation = useMutation({
+    mutationFn: async ({ id, direction }: { id: string; direction: "up" | "down" }) => {
+      const idx = posts.findIndex(p => p.id === id);
+      if (idx < 0) return;
+      const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+      if (swapIdx < 0 || swapIdx >= posts.length) return;
+
+      const current = posts[idx];
+      const swap = posts[swapIdx];
+
+      // Swap sort_order values
+      const currentOrder = current.sort_order || 0;
+      const swapOrder = swap.sort_order || 0;
+
+      await Promise.all([
+        supabase.from("posts").update({ sort_order: swapOrder }).eq("id", current.id),
+        supabase.from("posts").update({ sort_order: currentOrder }).eq("id", swap.id),
+      ]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
     },
   });
 
@@ -208,138 +236,170 @@ const AdminPage = () => {
       </header>
 
       <main className="container py-6">
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-card border border-border rounded-sm p-4">
-            <p className="text-2xl font-bold text-foreground">{posts.length}</p>
-            <p className="text-xs text-muted-foreground">মোট পোস্ট</p>
-          </div>
-          <div className="bg-card border border-border rounded-sm p-4">
-            <p className="text-2xl font-bold text-foreground">{posts.filter(p => p.status === "published").length}</p>
-            <p className="text-xs text-muted-foreground">পাবলিশড</p>
-          </div>
-          <div className="bg-card border border-border rounded-sm p-4">
-            <p className="text-2xl font-bold text-primary">{posts.filter(p => p.status === "draft").length}</p>
-            <p className="text-xs text-muted-foreground">ড্রাফট</p>
-          </div>
-          <div className="bg-card border border-border rounded-sm p-4">
-            <p className="text-2xl font-bold text-primary">{labels.length}</p>
-            <p className="text-xs text-muted-foreground">লেবেল</p>
-          </div>
-        </div>
+        <Tabs defaultValue="posts">
+          <TabsList className="mb-4">
+            <TabsTrigger value="posts">📝 পোস্ট</TabsTrigger>
+            <TabsTrigger value="team"><Users size={14} className="mr-1" /> টিম</TabsTrigger>
+          </TabsList>
 
-        {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold text-foreground">পোস্ট সমূহ</h2>
-            <Select value={filterLabel} onValueChange={setFilterLabel}>
-              <SelectTrigger className="w-36 h-8 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">সব লেবেল</SelectItem>
-                {labels.map((l) => (
-                  <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" onClick={async () => {
-              try {
-                const text = await navigator.clipboard.readText();
-                if (!text.trim()) { toast({ title: "ক্লিপবোর্ড খালি", variant: "destructive" }); return; }
-                setEditingPost(null);
-                setForm({ title: text.split("\n")[0]?.slice(0, 200) || "", content: `<p>${text}</p>`, excerpt: text.slice(0, 150), label: labels[0].id, image_url: "", source_url: "", source_name: "" });
-                setDialogOpen(true);
-                toast({ title: "ক্লিপবোর্ড থেকে পেস্ট হয়েছে ✅" });
-              } catch { toast({ title: "ক্লিপবোর্ড অ্যাক্সেস ব্যর্থ", variant: "destructive" }); }
-            }}>
-              <ClipboardPaste size={14} className="mr-1" /> পেস্ট
-            </Button>
-            <Button size="sm" onClick={openCreate} className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <Plus size={14} className="mr-1" /> নতুন পোস্ট
-            </Button>
-          </div>
-        </div>
+          <TabsContent value="posts">
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-card border border-border rounded-sm p-4">
+                <p className="text-2xl font-bold text-foreground">{posts.length}</p>
+                <p className="text-xs text-muted-foreground">মোট পোস্ট</p>
+              </div>
+              <div className="bg-card border border-border rounded-sm p-4">
+                <p className="text-2xl font-bold text-foreground">{posts.filter(p => p.status === "published").length}</p>
+                <p className="text-xs text-muted-foreground">পাবলিশড</p>
+              </div>
+              <div className="bg-card border border-border rounded-sm p-4">
+                <p className="text-2xl font-bold text-primary">{posts.filter(p => p.status === "draft").length}</p>
+                <p className="text-xs text-muted-foreground">ড্রাফট</p>
+              </div>
+              <div className="bg-card border border-border rounded-sm p-4">
+                <p className="text-2xl font-bold text-primary">{labels.length}</p>
+                <p className="text-xs text-muted-foreground">লেবেল</p>
+              </div>
+            </div>
 
-        {/* Posts table */}
-        <div className="bg-card border border-border rounded-sm overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12 text-muted-foreground">
-              <Loader2 className="animate-spin mr-2" size={18} /> লোড হচ্ছে...
+            {/* Toolbar */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold text-foreground">পোস্ট সমূহ</h2>
+                <Select value={filterLabel} onValueChange={setFilterLabel}>
+                  <SelectTrigger className="w-36 h-8 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">সব লেবেল</SelectItem>
+                    {labels.map((l) => (
+                      <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" onClick={async () => {
+                  try {
+                    const text = await navigator.clipboard.readText();
+                    if (!text.trim()) { toast({ title: "ক্লিপবোর্ড খালি", variant: "destructive" }); return; }
+                    setEditingPost(null);
+                    setForm({ title: text.split("\n")[0]?.slice(0, 200) || "", content: `<p>${text}</p>`, excerpt: text.slice(0, 150), label: labels[0].id, image_url: "", source_url: "", source_name: "" });
+                    setDialogOpen(true);
+                    toast({ title: "ক্লিপবোর্ড থেকে পেস্ট হয়েছে ✅" });
+                  } catch { toast({ title: "ক্লিপবোর্ড অ্যাক্সেস ব্যর্থ", variant: "destructive" }); }
+                }}>
+                  <ClipboardPaste size={14} className="mr-1" /> পেস্ট
+                </Button>
+                <Button size="sm" onClick={openCreate} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Plus size={14} className="mr-1" /> নতুন পোস্ট
+                </Button>
+              </div>
             </div>
-          ) : posts.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">কোনো পোস্ট নেই</div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-muted/50">
-                    <th className="text-left px-4 py-2.5 font-semibold text-foreground">শিরোনাম</th>
-                    <th className="text-left px-4 py-2.5 font-semibold text-foreground hidden md:table-cell">লেবেল</th>
-                    <th className="text-left px-4 py-2.5 font-semibold text-foreground hidden md:table-cell">স্ট্যাটাস</th>
-                    <th className="text-right px-4 py-2.5 font-semibold text-foreground">অ্যাকশন</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {posts.map((post) => (
-                    <tr key={post.id} className="border-b border-border hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          {post.image_url && (
-                            <img src={post.image_url} alt="" className="w-12 h-9 rounded-sm object-cover shrink-0 hidden sm:block" />
-                          )}
-                          <div>
-                            <span className="font-medium text-foreground line-clamp-1">{post.title}</span>
-                            {post.source_name && (
-                              <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                                <Globe size={10} /> {post.source_name}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 hidden md:table-cell">
-                        <LabelBadge label={post.label} />
-                      </td>
-                      <td className="px-4 py-3 hidden md:table-cell">
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${post.status === "published" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
-                          {post.status === "published" ? "পাবলিশড" : "ড্রাফট"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-end gap-1">
-                          {post.status === "draft" && (
-                            <button
-                              onClick={() => publishMutation.mutate(post.id)}
-                              className="p-1.5 rounded-sm text-green-600 hover:bg-green-50 transition-colors text-xs font-medium"
-                              title="পাবলিশ"
-                            >
-                              পাবলিশ
-                            </button>
-                          )}
-                          <button
-                            onClick={() => openEdit(post)}
-                            className="p-1.5 rounded-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                          >
-                            <Pencil size={14} />
-                          </button>
-                          <button
-                            onClick={() => deleteMutation.mutate(post.id)}
-                            className="p-1.5 rounded-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+
+            {/* Posts table */}
+            <div className="bg-card border border-border rounded-sm overflow-hidden">
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12 text-muted-foreground">
+                  <Loader2 className="animate-spin mr-2" size={18} /> লোড হচ্ছে...
+                </div>
+              ) : posts.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">কোনো পোস্ট নেই</div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/50">
+                        <th className="text-center px-2 py-2.5 font-semibold text-foreground w-16">ক্রম</th>
+                        <th className="text-left px-4 py-2.5 font-semibold text-foreground">শিরোনাম</th>
+                        <th className="text-left px-4 py-2.5 font-semibold text-foreground hidden md:table-cell">লেবেল</th>
+                        <th className="text-left px-4 py-2.5 font-semibold text-foreground hidden md:table-cell">স্ট্যাটাস</th>
+                        <th className="text-right px-4 py-2.5 font-semibold text-foreground">অ্যাকশন</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {posts.map((post, idx) => (
+                        <tr key={post.id} className="border-b border-border hover:bg-muted/30 transition-colors">
+                          <td className="px-2 py-3">
+                            <div className="flex flex-col items-center gap-0.5">
+                              <button
+                                onClick={() => reorderMutation.mutate({ id: post.id, direction: "up" })}
+                                disabled={idx === 0 || reorderMutation.isPending}
+                                className="p-0.5 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                              >
+                                <ArrowUp size={14} />
+                              </button>
+                              <button
+                                onClick={() => reorderMutation.mutate({ id: post.id, direction: "down" })}
+                                disabled={idx === posts.length - 1 || reorderMutation.isPending}
+                                className="p-0.5 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                              >
+                                <ArrowDown size={14} />
+                              </button>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              {post.image_url && (
+                                <img src={post.image_url} alt="" className="w-12 h-9 rounded-sm object-cover shrink-0 hidden sm:block" />
+                              )}
+                              <div>
+                                <span className="font-medium text-foreground line-clamp-1">{post.title}</span>
+                                {post.source_name && (
+                                  <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                                    <Globe size={10} /> {post.source_name}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 hidden md:table-cell">
+                            <LabelBadge label={post.label} />
+                          </td>
+                          <td className="px-4 py-3 hidden md:table-cell">
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${post.status === "published" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
+                              {post.status === "published" ? "পাবলিশড" : "ড্রাফট"}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center justify-end gap-1">
+                              {post.status === "draft" && (
+                                <button
+                                  onClick={() => publishMutation.mutate(post.id)}
+                                  className="p-1.5 rounded-sm text-green-600 hover:bg-green-50 transition-colors text-xs font-medium"
+                                  title="পাবলিশ"
+                                >
+                                  পাবলিশ
+                                </button>
+                              )}
+                              <button
+                                onClick={() => openEdit(post)}
+                                className="p-1.5 rounded-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                              >
+                                <Pencil size={14} />
+                              </button>
+                              <button
+                                onClick={() => deleteMutation.mutate(post.id)}
+                                className="p-1.5 rounded-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </TabsContent>
+
+          <TabsContent value="team">
+            <ReporterManager />
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Create/Edit Dialog */}
