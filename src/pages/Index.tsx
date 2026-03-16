@@ -11,6 +11,7 @@ import { Info } from "lucide-react";
 
 const Index = () => {
   const { data: latest = [] } = useLatestPosts(10);
+  const { data: national = [] } = useLabelPosts("জাতীয়");
   const { data: politics = [] } = useLabelPosts("রাজনীতি");
   const { data: country = [] } = useLabelPosts("সারাদেশ");
   const { data: world = [] } = useLabelPosts("বিশ্ব");
