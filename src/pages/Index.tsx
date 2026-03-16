@@ -54,6 +54,7 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main content */}
           <div className="lg:col-span-8">
+            <CategorySection title="জাতীয়" posts={national} layout="featured" />
             <CategorySection title="রাজনীতি" posts={politics} layout="featured" />
             <CategorySection title="সারাদেশ" posts={country} layout="grid" />
             <CategorySection title="বিশ্ব" posts={world} layout="grid" />
