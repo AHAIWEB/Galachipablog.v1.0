@@ -45,6 +45,7 @@ const images = {
 };
 
 export const labels = [
+  { id: "জাতীয়", name: "জাতীয়", color: "primary" },
   { id: "রাজনীতি", name: "রাজনীতি", color: "primary" },
   { id: "সারাদেশ", name: "সারাদেশ", color: "primary" },
   { id: "বিশ্ব", name: "বিশ্ব", color: "primary" },
@@ -53,6 +54,11 @@ export const labels = [
   { id: "প্রযুক্তি", name: "প্রযুক্তি", color: "primary" },
   { id: "অর্থনীতি", name: "অর্থনীতি", color: "primary" },
   { id: "আলোচিত", name: "আলোচিত", color: "primary" },
+  { id: "গলাচিপা", name: "গলাচিপা", color: "primary" },
+  { id: "শিক্ষা", name: "শিক্ষা", color: "primary" },
+  { id: "স্বাস্থ্য", name: "স্বাস্থ্য", color: "primary" },
+  { id: "ধর্ম", name: "ধর্ম", color: "primary" },
+  { id: "মতামত", name: "মতামত", color: "primary" },
 ];
 
 export const mockPosts: NewsPost[] = [

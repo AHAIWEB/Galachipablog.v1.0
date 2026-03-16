@@ -1,7 +1,6 @@
 import { BLOGGER_CONFIG, isBloggerConfigured } from "./bloggerConfig";
+import { supabase } from "@/integrations/supabase/client";
 import type { NewsPost } from "./mockData";
-
-// ── Blogger JSON Feed approach (no API key needed, works via public feeds) ──
 
 interface FeedEntry {
   title: { $t: string };
@@ -20,19 +19,16 @@ interface FeedResponse {
   };
 }
 
-// Extract first image from HTML content
 const extractImage = (html: string): string => {
   const match = html.match(/<img[^>]+src="([^"]+)"/);
   return match?.[1] || "https://images.unsplash.com/photo-1504711434969-e33886168d5c?w=600&h=400&fit=crop";
 };
 
-// Strip HTML and get excerpt
 const extractExcerpt = (html: string, maxLength = 150): string => {
   const text = html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
   return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 };
 
-// Format date to Bangla
 const formatBanglaDate = (dateStr: string): string => {
   const date = new Date(dateStr);
   const banglaMonths = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
@@ -48,7 +44,6 @@ const getPostUrl = (entry: FeedEntry): string => {
 
 const getImage = (entry: FeedEntry): string => {
   if (entry.media$thumbnail) {
-    // Blogger thumbnails are small (s72-c), upscale to s600-c
     return entry.media$thumbnail.url.replace(/s72-c/, "s600-c");
   }
   const content = entry.content?.$t || entry.summary?.$t || "";
@@ -58,11 +53,10 @@ const getImage = (entry: FeedEntry): string => {
 const transformFeedEntry = (entry: FeedEntry): NewsPost => {
   const content = entry.content?.$t || entry.summary?.$t || "";
   const labels = entry.category?.map(c => c.term) || [];
-  // Skip "শীর্ষ সংবাদ" label, use first real label
   const visibleLabel = labels.find(l => l !== "শীর্ষ সংবাদ") || labels[0] || "সাধারণ";
 
   return {
-    id: getPostUrl(entry), // use URL as unique ID
+    id: getPostUrl(entry),
     title: entry.title.$t,
     excerpt: extractExcerpt(content),
     image: getImage(entry),
@@ -73,17 +67,19 @@ const transformFeedEntry = (entry: FeedEntry): NewsPost => {
   };
 };
 
-// Fetch via Blogger JSON feed (public, no API key needed)
+// Fetch via edge function proxy to avoid CORS
 const fetchFeed = async (url: string): Promise<FeedEntry[]> => {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Feed error: ${res.status}`);
-  const data: FeedResponse = await res.json();
-  return data.feed?.entry || [];
+  const { data, error } = await supabase.functions.invoke("blogger-proxy", {
+    body: { url },
+  });
+  if (error) throw error;
+  // data is the raw JSON response
+  const feed = typeof data === "string" ? JSON.parse(data) : data;
+  return feed?.feed?.entry || [];
 };
 
 const BLOG_BASE = BLOGGER_CONFIG.blogUrl.replace(/\/$/, "");
 
-// Label aliases for fallback (try multiple label names)
 const LABEL_ALIASES: Record<string, string[]> = {
   "সারাদেশ": ["সারাদেশ", "জাতীয়", "দেশ"],
   "জাতীয়": ["জাতীয়", "সারাদেশ", "দেশ"],
@@ -92,7 +88,6 @@ const LABEL_ALIASES: Record<string, string[]> = {
   "আলোচিত": ["আলোচিত", "ট্রেন্ডিং"],
 };
 
-// Fetch posts by label (with alias fallback)
 export const fetchPostsByLabel = async (label: string, maxResults = 6): Promise<NewsPost[]> => {
   if (!isBloggerConfigured()) return [];
 
@@ -114,7 +109,6 @@ export const fetchPostsByLabel = async (label: string, maxResults = 6): Promise<
   return [];
 };
 
-// Fetch latest posts
 export const fetchLatestPosts = async (maxResults = 10): Promise<NewsPost[]> => {
   if (!isBloggerConfigured()) return [];
 
@@ -128,7 +122,6 @@ export const fetchLatestPosts = async (maxResults = 10): Promise<NewsPost[]> => 
   }
 };
 
-// Search posts
 export const searchPosts = async (query: string, maxResults = 10): Promise<NewsPost[]> => {
   if (!isBloggerConfigured()) return [];
 
