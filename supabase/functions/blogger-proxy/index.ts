@@ -19,8 +19,8 @@ serve(async (req) => {
       });
     }
 
-    // Only allow galachipaprotidin.com feeds
-    if (!url.includes("galachipaprotidin.com")) {
+    // Allow galachipaprotidin feeds (both custom domain and blogspot)
+    if (!url.includes("galachipaprotidin")) {
       return new Response(JSON.stringify({ error: "invalid domain" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
