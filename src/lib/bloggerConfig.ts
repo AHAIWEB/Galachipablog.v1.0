@@ -8,7 +8,7 @@ export const BLOGGER_CONFIG = {
   apiKey: "AIzaSyAV4SO5rq8io1FdRA8GENWELB5h2XOO30U",
 
   // ব্লগের বেস URL (REQUIRED for JSON feed)
-  blogUrl: "https://www.galachipaprotidin.com",
+  blogUrl: "https://galachipaprotidin.blogspot.com",
 
   // প্রতি সেকশনে কতটি পোস্ট দেখাবে
   postsPerSection: 6,
