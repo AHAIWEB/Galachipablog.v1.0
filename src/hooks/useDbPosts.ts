@@ -34,12 +34,34 @@ export const useDbPublishedPosts = (label?: string) => {
         .from("posts")
         .select("*")
         .eq("status", "published")
+        .order("sort_order", { ascending: false })
         .order("created_at", { ascending: false })
-        .limit(10);
+        .limit(20);
       if (label) {
-        query = query.eq("label", label);
+        // Match primary label OR tags array containing this label
+        query = query.or(`label.eq.${label},tags.cs.{"${label}"}`);
       }
       const { data, error } = await query;
+      if (error) throw error;
+      return (data || []).map(transformDbPost);
+    },
+    staleTime: 2 * 60 * 1000,
+  });
+};
+
+// Fetch featured posts (শীর্ষ সংবাদ)
+export const useDbFeaturedPosts = () => {
+  return useQuery<NewsPost[]>({
+    queryKey: ["db-posts", "featured"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .eq("status", "published")
+        .eq("featured", true)
+        .order("sort_order", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(10);
       if (error) throw error;
       return (data || []).map(transformDbPost);
     },
