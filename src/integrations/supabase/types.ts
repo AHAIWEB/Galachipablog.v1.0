@@ -19,6 +19,7 @@ export type Database = {
           content: string | null
           created_at: string
           excerpt: string | null
+          featured: boolean | null
           id: string
           image_url: string | null
           label: string
@@ -26,6 +27,7 @@ export type Database = {
           source_name: string | null
           source_url: string | null
           status: string
+          tags: string[] | null
           title: string
           updated_at: string
         }
@@ -33,6 +35,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           excerpt?: string | null
+          featured?: boolean | null
           id?: string
           image_url?: string | null
           label?: string
@@ -40,6 +43,7 @@ export type Database = {
           source_name?: string | null
           source_url?: string | null
           status?: string
+          tags?: string[] | null
           title: string
           updated_at?: string
         }
@@ -47,6 +51,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           excerpt?: string | null
+          featured?: boolean | null
           id?: string
           image_url?: string | null
           label?: string
@@ -54,6 +59,7 @@ export type Database = {
           source_name?: string | null
           source_url?: string | null
           status?: string
+          tags?: string[] | null
           title?: string
           updated_at?: string
         }
