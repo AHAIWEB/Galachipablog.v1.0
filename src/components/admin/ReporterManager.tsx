@@ -17,7 +17,7 @@ interface Profile {
 interface UserRole {
   id: string;
   user_id: string;
-  role: "admin" | "reporter";
+  role: "admin" | "editor" | "reporter";
   created_at: string;
 }
 
@@ -25,7 +25,7 @@ const ReporterManager = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [newEmail, setNewEmail] = useState("");
-  const [newRole, setNewRole] = useState<"admin" | "reporter">("reporter");
+  const [newRole, setNewRole] = useState<"admin" | "editor" | "reporter">("reporter");
 
   // Fetch roles with profiles
   const { data: roles = [], isLoading } = useQuery({
@@ -95,12 +95,13 @@ const ReporterManager = () => {
           placeholder="ইমেইল লিখুন"
           className="flex-1"
         />
-        <Select value={newRole} onValueChange={(v) => setNewRole(v as "admin" | "reporter")}>
+        <Select value={newRole} onValueChange={(v) => setNewRole(v as "admin" | "editor" | "reporter")}>
           <SelectTrigger className="w-32">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="reporter">রিপোর্টার</SelectItem>
+            <SelectItem value="editor">এডিটর</SelectItem>
             <SelectItem value="admin">এডমিন</SelectItem>
           </SelectContent>
         </Select>
@@ -122,8 +123,10 @@ const ReporterManager = () => {
               <span className="text-muted-foreground ml-2 text-xs">{r.profile?.email}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`text-xs px-2 py-0.5 rounded-full ${r.role === "admin" ? "bg-primary/10 text-primary" : "bg-blue-100 text-blue-700"}`}>
-                {r.role === "admin" ? "এডমিন" : "রিপোর্টার"}
+              <span className={`text-xs px-2 py-0.5 rounded-full ${
+                r.role === "admin" ? "bg-primary/10 text-primary" : r.role === "editor" ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"
+              }`}>
+                {r.role === "admin" ? "এডমিন" : r.role === "editor" ? "এডিটর" : "রিপোর্টার"}
               </span>
               <button
                 onClick={() => removeRoleMutation.mutate(r.id)}

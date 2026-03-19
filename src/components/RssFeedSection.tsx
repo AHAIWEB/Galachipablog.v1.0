@@ -11,23 +11,34 @@ interface RssItem {
   source: string;
 }
 
-const RSS_FEEDS = [
-  { url: "https://www.prothomalo.com/feed", name: "প্রথম আলো" },
-  { url: "https://www.banglanews24.com/rss/rss.xml", name: "বাংলানিউজ" },
-  { url: "https://www.jugantor.com/feed/rss.xml", name: "যুগান্তর" },
-];
-
 const RssFeedSection = () => {
-  const { data: items = [], isLoading } = useQuery<RssItem[]>({
-    queryKey: ["rss-feed"],
+  // Fetch feed URLs from DB
+  const { data: feeds = [] } = useQuery({
+    queryKey: ["rss-feeds-config"],
     queryFn: async () => {
+      const { data, error } = await supabase
+        .from("rss_feeds")
+        .select("*")
+        .eq("enabled", true);
+      if (error) throw error;
+      return (data || []).map((f: any) => ({ url: f.url, name: f.name }));
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: items = [], isLoading } = useQuery<RssItem[]>({
+    queryKey: ["rss-feed", feeds],
+    queryFn: async () => {
+      if (feeds.length === 0) return [];
       const { data, error } = await supabase.functions.invoke("rss-feed", {
-        body: { feeds: RSS_FEEDS },
+        body: { feeds },
       });
       if (error) throw error;
       return data?.items || [];
     },
-    staleTime: 10 * 60 * 1000,
+    enabled: feeds.length > 0,
+    staleTime: 30 * 1000,
+    refetchInterval: 60 * 1000, // Auto-refresh every 1 minute
     retry: 1,
   });
 
@@ -54,10 +65,10 @@ const RssFeedSection = () => {
       <div className="flex items-center gap-2 mb-4">
         <Rss size={16} className="text-primary" />
         <h2 className="text-lg font-bold text-primary">সংবাদ সংকলন</h2>
-        <span className="text-xs text-muted-foreground ml-auto">RSS</span>
+        <span className="text-xs text-muted-foreground ml-auto">🔄 ১ মিনিটে আপডেট</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {items.slice(0, 10).map((item, i) => (
+        {items.slice(0, 12).map((item, i) => (
           <a
             key={i}
             href={item.link}

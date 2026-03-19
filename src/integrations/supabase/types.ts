@@ -86,6 +86,30 @@ export type Database = {
         }
         Relationships: []
       }
+      rss_feeds: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          name: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          name: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          name?: string
+          url?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -121,7 +145,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "reporter"
+      app_role: "admin" | "reporter" | "editor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -249,7 +273,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "reporter"],
+      app_role: ["admin", "reporter", "editor"],
     },
   },
 } as const

@@ -1,14 +1,16 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Plus, Pencil, Trash2, Eye, Globe, Loader2, LogOut,
   ClipboardPaste, ArrowUp, ArrowDown, Users, Star, StarOff,
-  Rss, X, ImageIcon
+  Rss, X, LayoutDashboard, FileText, Settings
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole, type AppRole } from "@/hooks/useUserRole";
 import LabelBadge from "@/components/LabelBadge";
 import RichEditor from "@/components/RichEditor";
 import ReporterManager from "@/components/admin/ReporterManager";
+import RssFeedManager from "@/components/admin/RssFeedManager";
 import { labels } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,33 +42,39 @@ interface Post {
   updated_at: string;
 }
 
+const ROLE_LABELS: Record<string, string> = {
+  admin: "এডমিন",
+  editor: "এডিটর",
+  reporter: "রিপোর্টার",
+};
+
 const AdminPage = () => {
   const { user, signOut } = useAuth();
+  const { data: userRole, isLoading: roleLoading } = useUserRole();
   const navigate = useNavigate();
   const [filterLabel, setFilterLabel] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [form, setForm] = useState({
-    title: "",
-    content: "",
-    excerpt: "",
-    label: "",
-    tags: [] as string[],
-    featured: false,
-    image_url: "",
-    source_url: "",
-    source_name: "",
+    title: "", content: "", excerpt: "", label: "", tags: [] as string[],
+    featured: false, image_url: "", source_url: "", source_name: "",
   });
   const [fetchingUrl, setFetchingUrl] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const isAdmin = userRole === "admin";
+  const isEditor = userRole === "editor";
+  const canManagePosts = isAdmin || isEditor || userRole === "reporter";
+
   // Fetch posts
   const { data: posts = [], isLoading } = useQuery({
-    queryKey: ["admin-posts", filterLabel],
+    queryKey: ["admin-posts", filterLabel, filterStatus],
     queryFn: async () => {
       let query = supabase.from("posts").select("*").order("sort_order", { ascending: false }).order("created_at", { ascending: false });
       if (filterLabel !== "all") query = query.eq("label", filterLabel);
+      if (filterStatus !== "all") query = query.eq("status", filterStatus);
       const { data, error } = await query;
       if (error) throw error;
       return (data || []).map((p: any) => ({ ...p, tags: p.tags || [], featured: p.featured || false })) as Post[];
@@ -83,7 +91,7 @@ const AdminPage = () => {
         image_url: form.image_url,
         source_url: form.source_url,
         source_name: form.source_name,
-        label: form.label,
+        label: form.label || labels[0].id,
         tags: form.tags,
         featured: form.featured,
         status: "draft" as const,
@@ -116,13 +124,13 @@ const AdminPage = () => {
   });
 
   const publishMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("posts").update({ status: "published" }).eq("id", id);
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase.from("posts").update({ status }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
-      toast({ title: "পোস্ট পাবলিশ হয়েছে ✅" });
+      toast({ title: "স্ট্যাটাস আপডেট হয়েছে ✅" });
     },
   });
 
@@ -131,9 +139,7 @@ const AdminPage = () => {
       const { error } = await supabase.from("posts").update({ featured }).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-posts"] }),
   });
 
   const reorderMutation = useMutation({
@@ -152,7 +158,7 @@ const AdminPage = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-posts"] }),
   });
 
-  // URL fetch with full content
+  // URL fetch
   const handleFetchUrl = useCallback(async () => {
     if (!form.source_url.trim()) return;
     setFetchingUrl(true);
@@ -161,8 +167,9 @@ const AdminPage = () => {
         body: { url: form.source_url },
       });
       if (error) throw error;
-      const fullContent = data.bodyText
-        ? `${data.image ? `<img src="${data.image}" alt="${data.title || ""}" />` : ""}<p>${data.bodyText}</p><p><em>সূত্র: <a href="${form.source_url}" target="_blank">${data.siteName || form.source_url}</a></em></p>`
+      const bodyText50 = data.bodyText ? data.bodyText.slice(0, Math.ceil(data.bodyText.length * 0.5)) : "";
+      const fullContent = bodyText50
+        ? `${data.image ? `<img src="${data.image}" alt="${data.title || ""}" />` : ""}<p>${bodyText50}</p><p><em>সূত্র: <a href="${form.source_url}" target="_blank">${data.siteName || form.source_url}</a></em></p>`
         : form.content;
       setForm(f => ({
         ...f,
@@ -172,7 +179,7 @@ const AdminPage = () => {
         source_name: data.siteName || f.source_name,
         content: fullContent,
       }));
-      toast({ title: "URL থেকে সম্পূর্ণ তথ্য আনা হয়েছে ✅" });
+      toast({ title: "URL থেকে ৫০% কন্টেন্ট আনা হয়েছে ✅" });
     } catch (err: any) {
       toast({ title: "URL ফেচ ব্যর্থ: " + err.message, variant: "destructive" });
     } finally {
@@ -185,28 +192,25 @@ const AdminPage = () => {
     try {
       const text = await navigator.clipboard.readText();
       if (!text.trim()) { toast({ title: "ক্লিপবোর্ড খালি", variant: "destructive" }); return; }
-
-      // Check if it's a URL
       const isUrl = /^https?:\/\//i.test(text.trim());
       if (isUrl) {
         setEditingPost(null);
         setForm({ title: "", content: "", excerpt: "", label: labels[0].id, tags: [], featured: false, image_url: "", source_url: text.trim(), source_name: "" });
         setDialogOpen(true);
-        // Auto-fetch
         setFetchingUrl(true);
         try {
           const { data, error } = await supabase.functions.invoke("scrape-url", { body: { url: text.trim() } });
           if (!error && data) {
-            const fullContent = data.bodyText
-              ? `${data.image ? `<img src="${data.image}" alt="${data.title || ""}" />` : ""}<p>${data.bodyText}</p><p><em>সূত্র: <a href="${text.trim()}" target="_blank">${data.siteName || text.trim()}</a></em></p>`
-              : "";
+            const bodyText50 = data.bodyText ? data.bodyText.slice(0, Math.ceil(data.bodyText.length * 0.5)) : "";
             setForm(f => ({
               ...f,
               title: data.title || "",
               excerpt: data.description || "",
               image_url: data.image || "",
               source_name: data.siteName || "",
-              content: fullContent,
+              content: bodyText50
+                ? `${data.image ? `<img src="${data.image}" alt="${data.title || ""}" />` : ""}<p>${bodyText50}</p><p><em>সূত্র: <a href="${text.trim()}" target="_blank">${data.siteName || text.trim()}</a></em></p>`
+                : "",
             }));
           }
         } catch {} finally { setFetchingUrl(false); }
@@ -218,12 +222,7 @@ const AdminPage = () => {
           title: lines[0]?.slice(0, 200) || "",
           content: `<p>${text.replace(/\n/g, "</p><p>")}</p>`,
           excerpt: text.replace(/\n/g, " ").slice(0, 150),
-          label: labels[0].id,
-          tags: [],
-          featured: false,
-          image_url: "",
-          source_url: "",
-          source_name: "",
+          label: labels[0].id, tags: [], featured: false, image_url: "", source_url: "", source_name: "",
         });
         setDialogOpen(true);
         toast({ title: "ক্লিপবোর্ড থেকে পেস্ট হয়েছে ✅" });
@@ -242,15 +241,9 @@ const AdminPage = () => {
   const openEdit = (post: Post) => {
     setEditingPost(post);
     setForm({
-      title: post.title,
-      content: post.content || "",
-      excerpt: post.excerpt || "",
-      label: post.label,
-      tags: post.tags || [],
-      featured: post.featured || false,
-      image_url: post.image_url || "",
-      source_url: post.source_url || "",
-      source_name: post.source_name || "",
+      title: post.title, content: post.content || "", excerpt: post.excerpt || "",
+      label: post.label, tags: post.tags || [], featured: post.featured || false,
+      image_url: post.image_url || "", source_url: post.source_url || "", source_name: post.source_name || "",
     });
     setDialogOpen(true);
   };
@@ -261,11 +254,23 @@ const AdminPage = () => {
   };
 
   const toggleTag = (tag: string) => {
-    setForm(f => ({
-      ...f,
-      tags: f.tags.includes(tag) ? f.tags.filter(t => t !== tag) : [...f.tags, tag],
-    }));
+    setForm(f => ({ ...f, tags: f.tags.includes(tag) ? f.tags.filter(t => t !== tag) : [...f.tags, tag] }));
   };
+
+  if (roleLoading) {
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin" /></div>;
+  }
+
+  // Stats
+  const totalPosts = posts.length;
+  const publishedPosts = posts.filter(p => p.status === "published").length;
+  const draftPosts = posts.filter(p => p.status === "draft").length;
+  const featuredPosts = posts.filter(p => p.featured).length;
+  const todayPosts = posts.filter(p => {
+    const d = new Date(p.created_at);
+    const now = new Date();
+    return d.toDateString() === now.toDateString();
+  }).length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -278,7 +283,9 @@ const AdminPage = () => {
             </Link>
             <h1 className="text-lg font-bold text-primary-foreground">
               গলাচিপা<span className="text-primary">প্রতিদিন</span>
-              <span className="text-xs font-normal text-primary-foreground/50 ml-2">এডমিন</span>
+              <span className="text-xs font-normal text-primary-foreground/50 ml-2">
+                {ROLE_LABELS[userRole || ""] || "প্যানেল"}
+              </span>
             </h1>
           </div>
           <div className="flex items-center gap-3">
@@ -294,163 +301,245 @@ const AdminPage = () => {
       </header>
 
       <main className="container py-6">
-        <Tabs defaultValue="posts">
-          <TabsList className="mb-4">
-            <TabsTrigger value="posts">📝 পোস্ট</TabsTrigger>
-            <TabsTrigger value="team"><Users size={14} className="mr-1" /> টিম</TabsTrigger>
+        <Tabs defaultValue="dashboard">
+          <TabsList className="mb-4 flex-wrap">
+            <TabsTrigger value="dashboard"><LayoutDashboard size={14} className="mr-1" /> ড্যাশবোর্ড</TabsTrigger>
+            {canManagePosts && <TabsTrigger value="posts"><FileText size={14} className="mr-1" /> পোস্ট</TabsTrigger>}
+            {isAdmin && <TabsTrigger value="team"><Users size={14} className="mr-1" /> টিম</TabsTrigger>}
+            {(isAdmin || isEditor) && <TabsTrigger value="rss"><Rss size={14} className="mr-1" /> RSS</TabsTrigger>}
+            {isAdmin && <TabsTrigger value="settings"><Settings size={14} className="mr-1" /> সেটিংস</TabsTrigger>}
           </TabsList>
 
-          <TabsContent value="posts">
-            {/* Stats */}
+          {/* ========== DASHBOARD ========== */}
+          <TabsContent value="dashboard">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-              <div className="bg-card border border-border rounded-sm p-3">
-                <p className="text-2xl font-bold text-foreground">{posts.length}</p>
-                <p className="text-xs text-muted-foreground">মোট</p>
-              </div>
-              <div className="bg-card border border-border rounded-sm p-3">
-                <p className="text-2xl font-bold text-foreground">{posts.filter(p => p.status === "published").length}</p>
-                <p className="text-xs text-muted-foreground">পাবলিশড</p>
-              </div>
-              <div className="bg-card border border-border rounded-sm p-3">
-                <p className="text-2xl font-bold text-primary">{posts.filter(p => p.status === "draft").length}</p>
-                <p className="text-xs text-muted-foreground">ড্রাফট</p>
-              </div>
-              <div className="bg-card border border-border rounded-sm p-3">
-                <p className="text-2xl font-bold text-primary">{posts.filter(p => p.featured).length}</p>
-                <p className="text-xs text-muted-foreground">⭐ ফিচার্ড</p>
-              </div>
-              <div className="bg-card border border-border rounded-sm p-3">
-                <p className="text-2xl font-bold text-primary">{labels.length}</p>
-                <p className="text-xs text-muted-foreground">লেবেল</p>
-              </div>
+              <DashCard value={totalPosts} label="মোট পোস্ট" />
+              <DashCard value={publishedPosts} label="পাবলিশড" color="text-green-600" />
+              <DashCard value={draftPosts} label="ড্রাফট" color="text-yellow-600" />
+              <DashCard value={featuredPosts} label="⭐ ফিচার্ড" />
+              <DashCard value={todayPosts} label="আজকের পোস্ট" color="text-primary" />
             </div>
 
-            {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-foreground">পোস্ট</h2>
-                <Select value={filterLabel} onValueChange={setFilterLabel}>
-                  <SelectTrigger className="w-36 h-8 text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">সব লেবেল</SelectItem>
-                    {labels.map(l => (
-                      <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button size="sm" variant="outline" onClick={handlePaste}>
-                  <ClipboardPaste size={14} className="mr-1" /> পেস্ট
+            {/* Quick actions */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+              {canManagePosts && (
+                <Button variant="outline" className="h-20 flex-col gap-2" onClick={openCreate}>
+                  <Plus size={20} /> নতুন পোস্ট
                 </Button>
-                <Button size="sm" onClick={openCreate} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  <Plus size={14} className="mr-1" /> নতুন পোস্ট
+              )}
+              {canManagePosts && (
+                <Button variant="outline" className="h-20 flex-col gap-2" onClick={handlePaste}>
+                  <ClipboardPaste size={20} /> পেস্ট পোস্ট
                 </Button>
-              </div>
+              )}
+              <Link to="/" className="inline-flex">
+                <Button variant="outline" className="h-20 flex-col gap-2 w-full">
+                  <Eye size={20} /> হোমপেজ দেখুন
+                </Button>
+              </Link>
+              <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => window.open("https://www.galachipaprotidin.com", "_blank")}>
+                <Globe size={20} /> লাইভ সাইট
+              </Button>
             </div>
 
-            {/* Posts table */}
-            <div className="bg-card border border-border rounded-sm overflow-hidden">
-              {isLoading ? (
-                <div className="flex items-center justify-center py-12 text-muted-foreground">
-                  <Loader2 className="animate-spin mr-2" size={18} /> লোড হচ্ছে...
+            {/* Recent posts */}
+            <h3 className="font-bold text-foreground mb-3">সাম্প্রতিক পোস্ট</h3>
+            <div className="space-y-2">
+              {posts.slice(0, 5).map(post => (
+                <div key={post.id} className="flex items-center gap-3 bg-card border border-border rounded-sm p-3">
+                  {post.image_url && <img src={post.image_url} alt="" className="w-14 h-10 rounded-sm object-cover shrink-0" />}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground line-clamp-1">{post.title}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <LabelBadge label={post.label} />
+                      <span className={`text-xs ${post.status === "published" ? "text-green-600" : "text-yellow-600"}`}>
+                        {post.status === "published" ? "পাবলিশড" : "ড্রাফট"}
+                      </span>
+                    </div>
+                  </div>
+                  {canManagePosts && (
+                    <Button size="sm" variant="ghost" onClick={() => openEdit(post)}>
+                      <Pencil size={14} />
+                    </Button>
+                  )}
                 </div>
-              ) : posts.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">কোনো পোস্ট নেই</div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-border bg-muted/50">
-                        <th className="text-center px-2 py-2.5 font-semibold text-foreground w-16">ক্রম</th>
-                        <th className="text-left px-4 py-2.5 font-semibold text-foreground">শিরোনাম</th>
-                        <th className="text-left px-4 py-2.5 font-semibold text-foreground hidden md:table-cell">লেবেল</th>
-                        <th className="text-left px-4 py-2.5 font-semibold text-foreground hidden md:table-cell">স্ট্যাটাস</th>
-                        <th className="text-right px-4 py-2.5 font-semibold text-foreground">অ্যাকশন</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {posts.map((post, idx) => (
-                        <tr key={post.id} className="border-b border-border hover:bg-muted/30 transition-colors">
-                          <td className="px-2 py-3">
-                            <div className="flex flex-col items-center gap-0.5">
-                              <button onClick={() => reorderMutation.mutate({ id: post.id, direction: "up" })} disabled={idx === 0} className="p-0.5 text-muted-foreground hover:text-foreground disabled:opacity-30">
-                                <ArrowUp size={14} />
-                              </button>
-                              <button onClick={() => reorderMutation.mutate({ id: post.id, direction: "down" })} disabled={idx === posts.length - 1} className="p-0.5 text-muted-foreground hover:text-foreground disabled:opacity-30">
-                                <ArrowDown size={14} />
-                              </button>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-3">
-                              {post.image_url && (
-                                <img src={post.image_url} alt="" className="w-12 h-9 rounded-sm object-cover shrink-0 hidden sm:block" />
-                              )}
-                              <div>
-                                <div className="flex items-center gap-1.5">
-                                  {post.featured && <Star size={12} className="text-primary fill-primary shrink-0" />}
-                                  <span className="font-medium text-foreground line-clamp-1">{post.title}</span>
-                                </div>
-                                {post.source_name && (
-                                  <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                                    <Globe size={10} /> {post.source_name}
-                                  </span>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* ========== POSTS ========== */}
+          {canManagePosts && (
+            <TabsContent value="posts">
+              {/* Toolbar */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Select value={filterLabel} onValueChange={setFilterLabel}>
+                    <SelectTrigger className="w-32 h-8 text-xs"><SelectValue placeholder="লেবেল" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">সব লেবেল</SelectItem>
+                      {labels.map(l => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger className="w-28 h-8 text-xs"><SelectValue placeholder="স্ট্যাটাস" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">সব</SelectItem>
+                      <SelectItem value="published">পাবলিশড</SelectItem>
+                      <SelectItem value="draft">ড্রাফট</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" onClick={handlePaste}>
+                    <ClipboardPaste size={14} className="mr-1" /> পেস্ট
+                  </Button>
+                  <Button size="sm" onClick={openCreate} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Plus size={14} className="mr-1" /> নতুন পোস্ট
+                  </Button>
+                </div>
+              </div>
+
+              {/* Posts table */}
+              <div className="bg-card border border-border rounded-sm overflow-hidden">
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12 text-muted-foreground">
+                    <Loader2 className="animate-spin mr-2" size={18} /> লোড হচ্ছে...
+                  </div>
+                ) : posts.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">কোনো পোস্ট নেই</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border bg-muted/50">
+                          <th className="text-center px-2 py-2.5 font-semibold text-foreground w-16">ক্রম</th>
+                          <th className="text-left px-4 py-2.5 font-semibold text-foreground">শিরোনাম</th>
+                          <th className="text-left px-4 py-2.5 font-semibold text-foreground hidden md:table-cell">লেবেল</th>
+                          <th className="text-left px-4 py-2.5 font-semibold text-foreground hidden md:table-cell">স্ট্যাটাস</th>
+                          <th className="text-right px-4 py-2.5 font-semibold text-foreground">অ্যাকশন</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {posts.map((post, idx) => (
+                          <tr key={post.id} className="border-b border-border hover:bg-muted/30 transition-colors">
+                            <td className="px-2 py-3">
+                              <div className="flex flex-col items-center gap-0.5">
+                                <button onClick={() => reorderMutation.mutate({ id: post.id, direction: "up" })} disabled={idx === 0} className="p-0.5 text-muted-foreground hover:text-foreground disabled:opacity-30">
+                                  <ArrowUp size={14} />
+                                </button>
+                                <button onClick={() => reorderMutation.mutate({ id: post.id, direction: "down" })} disabled={idx === posts.length - 1} className="p-0.5 text-muted-foreground hover:text-foreground disabled:opacity-30">
+                                  <ArrowDown size={14} />
+                                </button>
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-3">
+                                {post.image_url && (
+                                  <img src={post.image_url} alt="" className="w-12 h-9 rounded-sm object-cover shrink-0 hidden sm:block" />
                                 )}
-                                {post.tags && post.tags.length > 0 && (
-                                  <div className="flex gap-1 mt-0.5 flex-wrap">
-                                    {post.tags.map(t => (
-                                      <span key={t} className="text-[10px] bg-muted px-1.5 py-0.5 rounded-sm text-muted-foreground">{t}</span>
-                                    ))}
+                                <div>
+                                  <div className="flex items-center gap-1.5">
+                                    {post.featured && <Star size={12} className="text-primary fill-primary shrink-0" />}
+                                    <span className="font-medium text-foreground line-clamp-1">{post.title}</span>
                                   </div>
+                                  {post.source_name && (
+                                    <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                                      <Globe size={10} /> {post.source_name}
+                                    </span>
+                                  )}
+                                  {post.tags && post.tags.length > 0 && (
+                                    <div className="flex gap-1 mt-0.5 flex-wrap">
+                                      {post.tags.map(t => (
+                                        <span key={t} className="text-[10px] bg-muted px-1.5 py-0.5 rounded-sm text-muted-foreground">{t}</span>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-4 py-3 hidden md:table-cell">
+                              <LabelBadge label={post.label} />
+                            </td>
+                            <td className="px-4 py-3 hidden md:table-cell">
+                              <span className={`text-xs px-2 py-0.5 rounded-full ${post.status === "published" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
+                                {post.status === "published" ? "পাবলিশড" : "ড্রাফট"}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex items-center justify-end gap-1">
+                                <button
+                                  onClick={() => toggleFeaturedMutation.mutate({ id: post.id, featured: !post.featured })}
+                                  className={`p-1.5 rounded-sm transition-colors ${post.featured ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
+                                  title={post.featured ? "ফিচার্ড সরান" : "ফিচার্ড করুন"}
+                                >
+                                  {post.featured ? <Star size={14} className="fill-primary" /> : <StarOff size={14} />}
+                                </button>
+                                {post.status === "draft" ? (
+                                  <button onClick={() => publishMutation.mutate({ id: post.id, status: "published" })} className="p-1.5 rounded-sm text-green-600 hover:bg-green-50 text-xs font-medium">
+                                    পাবলিশ
+                                  </button>
+                                ) : (
+                                  <button onClick={() => publishMutation.mutate({ id: post.id, status: "draft" })} className="p-1.5 rounded-sm text-yellow-600 hover:bg-yellow-50 text-xs font-medium">
+                                    ড্রাফট
+                                  </button>
+                                )}
+                                <button onClick={() => openEdit(post)} className="p-1.5 rounded-sm text-muted-foreground hover:text-foreground hover:bg-muted">
+                                  <Pencil size={14} />
+                                </button>
+                                {(isAdmin || isEditor) && (
+                                  <button onClick={() => { if (confirm("পোস্টটি মুছে ফেলতে চান?")) deleteMutation.mutate(post.id); }} className="p-1.5 rounded-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                                    <Trash2 size={14} />
+                                  </button>
                                 )}
                               </div>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3 hidden md:table-cell">
-                            <LabelBadge label={post.label} />
-                          </td>
-                          <td className="px-4 py-3 hidden md:table-cell">
-                            <span className={`text-xs px-2 py-0.5 rounded-full ${post.status === "published" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
-                              {post.status === "published" ? "পাবলিশড" : "ড্রাফট"}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex items-center justify-end gap-1">
-                              <button
-                                onClick={() => toggleFeaturedMutation.mutate({ id: post.id, featured: !post.featured })}
-                                className={`p-1.5 rounded-sm transition-colors ${post.featured ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
-                                title={post.featured ? "ফিচার্ড সরান" : "ফিচার্ড করুন"}
-                              >
-                                {post.featured ? <Star size={14} className="fill-primary" /> : <StarOff size={14} />}
-                              </button>
-                              {post.status === "draft" && (
-                                <button onClick={() => publishMutation.mutate(post.id)} className="p-1.5 rounded-sm text-green-600 hover:bg-green-50 text-xs font-medium">
-                                  পাবলিশ
-                                </button>
-                              )}
-                              <button onClick={() => openEdit(post)} className="p-1.5 rounded-sm text-muted-foreground hover:text-foreground hover:bg-muted">
-                                <Pencil size={14} />
-                              </button>
-                              <button onClick={() => deleteMutation.mutate(post.id)} className="p-1.5 rounded-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10">
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </TabsContent>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          )}
 
-          <TabsContent value="team">
-            <ReporterManager />
-          </TabsContent>
+          {/* ========== TEAM ========== */}
+          {isAdmin && (
+            <TabsContent value="team">
+              <ReporterManager />
+            </TabsContent>
+          )}
+
+          {/* ========== RSS ========== */}
+          {(isAdmin || isEditor) && (
+            <TabsContent value="rss">
+              <RssFeedManager />
+            </TabsContent>
+          )}
+
+          {/* ========== SETTINGS ========== */}
+          {isAdmin && (
+            <TabsContent value="settings">
+              <div className="bg-card border border-border rounded-sm p-6">
+                <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+                  <Settings size={16} /> সাইট সেটিংস
+                </h3>
+                <div className="space-y-4 text-sm text-muted-foreground">
+                  <p>🔧 ভবিষ্যতে এখানে সাইট কাস্টমাইজেশন, সাইডবার উইজেট, ক্যাটেগরি সেকশন ম্যানেজমেন্ট যুক্ত হবে।</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-muted/50 rounded-sm p-3">
+                      <p className="font-medium text-foreground">মোট লেবেল</p>
+                      <p className="text-2xl font-bold text-primary">{labels.length}</p>
+                    </div>
+                    <div className="bg-muted/50 rounded-sm p-3">
+                      <p className="font-medium text-foreground">থিম</p>
+                      <p className="text-2xl font-bold text-primary">ডিফল্ট</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
       </main>
 
@@ -463,7 +552,7 @@ const AdminPage = () => {
           <div className="space-y-4 mt-2">
             {/* URL Fetch + Paste */}
             <div className="bg-muted/50 border border-border rounded-sm p-3">
-              <label className="text-xs font-medium text-foreground mb-1.5 block">🔗 URL থেকে কুইক পোস্ট</label>
+              <label className="text-xs font-medium text-foreground mb-1.5 block">🔗 URL থেকে কুইক পোস্ট (৫০% কন্টেন্ট)</label>
               <div className="flex gap-2">
                 <Input
                   value={form.source_url}
@@ -476,9 +565,7 @@ const AdminPage = () => {
                   <span className="ml-1">ফেচ</span>
                 </Button>
                 <Button
-                  variant="outline"
-                  size="sm"
-                  className="shrink-0"
+                  variant="outline" size="sm" className="shrink-0"
                   onClick={async () => {
                     try {
                       const text = await navigator.clipboard.readText();
@@ -492,7 +579,7 @@ const AdminPage = () => {
                   <ClipboardPaste size={14} />
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">শিরোনাম, ছবি, সম্পূর্ণ কন্টেন্ট ও সোর্স অটো আসবে</p>
+              <p className="text-xs text-muted-foreground mt-1">শিরোনাম, ছবি, ৫০% কন্টেন্ট ও সোর্স অটো আসবে</p>
             </div>
 
             {/* Title */}
@@ -526,8 +613,7 @@ const AdminPage = () => {
                 <Button
                   type="button"
                   variant={form.featured ? "default" : "outline"}
-                  size="sm"
-                  className="w-full"
+                  size="sm" className="w-full"
                   onClick={() => setForm(f => ({ ...f, featured: !f.featured }))}
                 >
                   <Star size={14} className={`mr-1 ${form.featured ? "fill-primary-foreground" : ""}`} />
@@ -542,8 +628,7 @@ const AdminPage = () => {
               <div className="flex flex-wrap gap-1.5">
                 {labels.map(l => (
                   <button
-                    key={l.id}
-                    type="button"
+                    key={l.id} type="button"
                     onClick={() => toggleTag(l.id)}
                     className={`text-xs px-2.5 py-1 rounded-sm border transition-colors ${
                       form.tags.includes(l.id)
@@ -585,5 +670,12 @@ const AdminPage = () => {
     </div>
   );
 };
+
+const DashCard = ({ value, label, color }: { value: number; label: string; color?: string }) => (
+  <div className="bg-card border border-border rounded-sm p-3">
+    <p className={`text-2xl font-bold ${color || "text-foreground"}`}>{value}</p>
+    <p className="text-xs text-muted-foreground">{label}</p>
+  </div>
+);
 
 export default AdminPage;
