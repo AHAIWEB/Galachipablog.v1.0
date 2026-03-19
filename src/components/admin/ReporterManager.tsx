@@ -95,12 +95,13 @@ const ReporterManager = () => {
           placeholder="ইমেইল লিখুন"
           className="flex-1"
         />
-        <Select value={newRole} onValueChange={(v) => setNewRole(v as "admin" | "reporter")}>
+        <Select value={newRole} onValueChange={(v) => setNewRole(v as "admin" | "editor" | "reporter")}>
           <SelectTrigger className="w-32">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="reporter">রিপোর্টার</SelectItem>
+            <SelectItem value="editor">এডিটর</SelectItem>
             <SelectItem value="admin">এডমিন</SelectItem>
           </SelectContent>
         </Select>
