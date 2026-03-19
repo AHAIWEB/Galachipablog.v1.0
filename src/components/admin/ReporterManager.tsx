@@ -17,7 +17,7 @@ interface Profile {
 interface UserRole {
   id: string;
   user_id: string;
-  role: "admin" | "reporter";
+  role: "admin" | "editor" | "reporter";
   created_at: string;
 }
 
