@@ -25,7 +25,7 @@ const ReporterManager = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [newEmail, setNewEmail] = useState("");
-  const [newRole, setNewRole] = useState<"admin" | "reporter">("reporter");
+  const [newRole, setNewRole] = useState<"admin" | "editor" | "reporter">("reporter");
 
   // Fetch roles with profiles
   const { data: roles = [], isLoading } = useQuery({
