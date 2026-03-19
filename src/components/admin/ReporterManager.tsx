@@ -123,8 +123,10 @@ const ReporterManager = () => {
               <span className="text-muted-foreground ml-2 text-xs">{r.profile?.email}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`text-xs px-2 py-0.5 rounded-full ${r.role === "admin" ? "bg-primary/10 text-primary" : "bg-blue-100 text-blue-700"}`}>
-                {r.role === "admin" ? "এডমিন" : "রিপোর্টার"}
+              <span className={`text-xs px-2 py-0.5 rounded-full ${
+                r.role === "admin" ? "bg-primary/10 text-primary" : r.role === "editor" ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"
+              }`}>
+                {r.role === "admin" ? "এডমিন" : r.role === "editor" ? "এডিটর" : "রিপোর্টার"}
               </span>
               <button
                 onClick={() => removeRoleMutation.mutate(r.id)}
